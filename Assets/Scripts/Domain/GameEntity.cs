@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UniRx;
 using UnityEngine;
 
-public class GameEntity : MonoBehaviour
+public class GameEntity
 {
     private readonly ReactiveProperty<IngameState> _gameState = new();
     public IReadOnlyReactiveProperty<IngameState> CurrentGameState => _gameState;
@@ -15,7 +15,13 @@ public class GameEntity : MonoBehaviour
         this.IngameStateSolver = new IngameStateSolver(this);
     }
 
-    public void ChangeGameState()
+    public void ChangeGameState(IngameState state)
+    {
+        _gameState.Value = state;
+        Debug.Log(state);
+    }
+
+    public void SolveGameState()
     {
         _gameState.Value = this.IngameStateSolver.Solve();
     }

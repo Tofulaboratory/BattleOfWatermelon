@@ -11,11 +11,11 @@ public class TitlePresenter : IDisposable
 
     private readonly ITitleView _titleView;
 
-    public TitlePresenter(ITitleView titleView)
+    public TitlePresenter(ITitleView titleView, GameEntity gameEntity)
     {
         _titleView = titleView;
         titleView.OnClickStartButton().Subscribe(_=>{
-            
+            gameEntity.ChangeGameState(IngameState.BEGIN);
         }).AddTo(_disposable);
     }
 

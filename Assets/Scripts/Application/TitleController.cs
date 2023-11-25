@@ -11,15 +11,19 @@ public class TitleController : IDisposable
 
     private readonly ITitleView _titleView;
 
+    private readonly GameFactory _gameFactory;
+
     [Inject]
     public TitleController(ITitleView titleView)
     {
         _titleView = titleView;
+        _gameFactory = new GameFactory();
     }
 
     public void Execute()
     {
-        new TitlePresenter(_titleView);
+        var gameEntity = _gameFactory.CreateSingleGame();
+        new TitlePresenter(_titleView,gameEntity);
     }
 
     public void Dispose()
