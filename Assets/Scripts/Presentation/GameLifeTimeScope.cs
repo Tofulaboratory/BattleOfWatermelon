@@ -11,8 +11,12 @@ public class GameLifeTimeScope : LifetimeScope
 
     protected override void Configure(IContainerBuilder builder)
     {
-        builder.Register<FruitFactory>(Lifetime.Scoped);    
+        builder.Register<GameFactory>(Lifetime.Scoped);
+        builder.Register<FruitFactory>(Lifetime.Scoped);
+    
         builder.RegisterEntryPoint<GameInitializer>();
+        builder.Register<TitleController>(Lifetime.Scoped);
+    
         builder.RegisterInstance(_titleView).As<ITitleView>();
     }
 }

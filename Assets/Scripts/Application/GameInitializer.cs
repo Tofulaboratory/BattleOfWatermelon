@@ -6,7 +6,16 @@ using VContainer.Unity;
 
 public class GameInitializer : IStartable
 {
-    void IStartable.Start()
+    private readonly TitleController _titleController;
+
+    [Inject]
+    public GameInitializer(TitleController titleController)
     {
+        _titleController = titleController;
+    }
+
+    public void Start()
+    {
+        _titleController.Execute();
     }
 }

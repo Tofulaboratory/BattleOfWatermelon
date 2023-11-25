@@ -2,17 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameFactory : MonoBehaviour
+public class GameFactory
 {
-    // Start is called before the first frame update
-    void Start()
+    public GameFactory()
     {
-        
+
     }
 
-    // Update is called once per frame
-    void Update()
+    internal GameEntity CreateGameEntity() => new();
+
+    public GameEntity CreateSingleGame()
     {
-        
+        return CreateGameEntity();
     }
 }

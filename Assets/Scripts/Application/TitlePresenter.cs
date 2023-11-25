@@ -9,12 +9,14 @@ public class TitlePresenter : IDisposable
 {
     private readonly CompositeDisposable _disposable = new();
 
-    private ITitleView titleView;
+    private readonly ITitleView _titleView;
 
-    [Inject]
     public TitlePresenter(ITitleView titleView)
     {
-        this.titleView = titleView;
+        _titleView = titleView;
+        titleView.OnClickStartButton().Subscribe(_=>{
+            
+        }).AddTo(_disposable);
     }
 
     public void Dispose()
