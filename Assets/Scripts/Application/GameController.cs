@@ -5,7 +5,7 @@ using UniRx;
 using UnityEngine;
 using VContainer;
 
-public class TitleController : IDisposable
+public class GameController : IDisposable
 {
     private CompositeDisposable _disposable = new();
 
@@ -13,21 +13,26 @@ public class TitleController : IDisposable
 
     private readonly GameFactory _gameFactory;
 
+    private readonly GameRepository _gameRepository;
+
+    private TitlePresenter titlePresenter;
+
     [Inject]
-    public TitleController(ITitleView titleView)
+    public GameController(ITitleView titleView, GameRepository gameRepository)
     {
         _titleView = titleView;
+        _gameRepository = gameRepository;
         _gameFactory = new GameFactory();
     }
 
     public void Execute()
     {
-        var gameEntity = _gameFactory.CreateSingleGame();
-        new TitlePresenter(_titleView,gameEntity);
+        titlePresenter = new TitlePresenter(_titleView,_gameFactory,_gameRepository);
     }
 
     public void Dispose()
     {
+        titlePresenter.Dispose();
         _disposable.Dispose();
     }
 }

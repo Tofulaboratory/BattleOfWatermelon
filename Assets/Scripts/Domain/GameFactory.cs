@@ -9,10 +9,10 @@ public class GameFactory
 
     }
 
-    internal GameEntity CreateGameEntity() => new();
+    internal GameEntity CreateGameEntity(IngameType type) => new(type);
 
-    public GameEntity CreateSingleGame()
+    public GameEntity Create(IngameType type)
     {
-        return CreateGameEntity();
+        return CreateGameEntity(type);
     }
 }

@@ -5,13 +5,16 @@ using UnityEngine;
 
 public class GameEntity
 {
+    public IngameType IngameType {get; private set;}
+
     private readonly ReactiveProperty<IngameState> _gameState = new();
     public IReadOnlyReactiveProperty<IngameState> CurrentGameState => _gameState;
 
     public IngameStateSolver IngameStateSolver {get; private set;}
 
-    public GameEntity()
+    public GameEntity(IngameType ingameType)
     {
+        this.IngameType = ingameType;
         this.IngameStateSolver = new IngameStateSolver(this);
     }
 

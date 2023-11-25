@@ -13,9 +13,11 @@ public class GameLifeTimeScope : LifetimeScope
     {
         builder.Register<GameFactory>(Lifetime.Scoped);
         builder.Register<FruitFactory>(Lifetime.Scoped);
-    
+
+        builder.Register<GameRepository>(Lifetime.Scoped);
+
         builder.RegisterEntryPoint<GameInitializer>();
-        builder.Register<TitleController>(Lifetime.Scoped);
+        builder.Register<GameController>(Lifetime.Scoped);
     
         builder.RegisterInstance(_titleView).As<ITitleView>();
     }
