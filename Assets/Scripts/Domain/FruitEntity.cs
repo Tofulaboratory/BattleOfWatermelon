@@ -1,18 +1,23 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using System;
+using Cysharp.Threading.Tasks;
+using UniRx;
 
-public class FruitEntity : MonoBehaviour
+public class FruitEntity
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
+    private readonly ReactiveProperty<int> _level = new();
+    public IReadOnlyReactiveProperty<int> Level => _level;
+
+    public FruitLevelSolver fruitLevelSolver {get; private set;}
+
+    public FruitEntity(){
+        fruitLevelSolver = new FruitLevelSolver();
+        _level.Value = fruitLevelSolver.Solve();
     }
 
-    // Update is called once per frame
-    void Update()
+    public bool IsMaxLevel() => _level.Value>=ValueDefines.MAX_FRUIT_LEVEL;
+
+    public void IncrementLevel()
     {
-        
+        _level.Value ++;
     }
 }
