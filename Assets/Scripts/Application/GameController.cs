@@ -25,7 +25,7 @@ public class GameController : IDisposable
         _gameFactory = new GameFactory();
     }
 
-    public void Execute()
+    public void ExecuteTitle()
     {
         titlePresenter = new TitlePresenter(_titleView,_gameFactory,_gameRepository);
     }

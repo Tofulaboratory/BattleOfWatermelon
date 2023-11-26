@@ -16,6 +16,6 @@ public class GameInitializer : IStartable
 
     public void Start()
     {
-        _gameController.Execute();
+        _gameController.ExecuteTitle();
     }
 }
