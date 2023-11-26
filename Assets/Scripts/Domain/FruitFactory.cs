@@ -2,17 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FruitFactory : MonoBehaviour
+public class FruitFactory
 {
-    // Start is called before the first frame update
-    void Start()
+    public FruitFactory()
     {
-        
+
     }
 
-    // Update is called once per frame
-    void Update()
+    internal FruitEntity CreateFruitEntity() => new();
+
+    public FruitEntity Create()
     {
-        
+        return CreateFruitEntity();
     }
 }
