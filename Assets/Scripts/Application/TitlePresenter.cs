@@ -12,12 +12,12 @@ public class TitlePresenter : IDisposable
 
     private readonly ITitleView _titleView;
 
-    public TitlePresenter(ITitleView titleView, GameFactory gameFactory, GameRepository gameRepository)
+    public TitlePresenter(ITitleView titleView, GameFactory gameFactory, GameRegistry gameRegistry)
     {
         _titleView = titleView;
         titleView.OnClickStartButton().Subscribe(_=>{
             var entity = gameFactory.Create(IngameType.SINGLE);
-            gameRepository.Save(entity);
+            gameRegistry.Save(entity);
             entity.ChangeGameState(IngameState.BEGIN);
         }).AddTo(_disposable);
     }
