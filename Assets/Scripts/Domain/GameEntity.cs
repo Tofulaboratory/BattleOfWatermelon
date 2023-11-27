@@ -6,26 +6,30 @@ using UnityEngine;
 public class GameEntity
 {
     public IngameType IngameType {get; private set;}
+    public GameBoardEntity GameBoardEntity {get; private set;}
+    public PlayerEntity PlayerEntity {get; private set;}
 
-    private readonly ReactiveProperty<IngameState> _gameState = new();
-    public IReadOnlyReactiveProperty<IngameState> CurrentGameState => _gameState;
+    private readonly ReactiveProperty<IngameState> _ingameState = new();
+    public IReadOnlyReactiveProperty<IngameState> CurrentGameState => _ingameState;
 
     public IngameStateSolver IngameStateSolver {get; private set;}
 
-    public GameEntity(IngameType ingameType)
+    public GameEntity(IngameType ingameType,GameBoardEntity gameBoardEntity,PlayerEntity playerEntity)
     {
         this.IngameType = ingameType;
+        this.GameBoardEntity = gameBoardEntity;
+        this.PlayerEntity = playerEntity;
+
         this.IngameStateSolver = new IngameStateSolver(this);
     }
 
     public void ChangeGameState(IngameState state)
     {
-        _gameState.Value = state;
-        Debug.Log(state);
+        _ingameState.Value = state;
     }
 
     public void SolveGameState()
     {
-        _gameState.Value = this.IngameStateSolver.Solve();
+        _ingameState.Value = this.IngameStateSolver.Solve();
     }
 }

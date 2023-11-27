@@ -4,15 +4,23 @@ using UnityEngine;
 
 public class GameFactory
 {
-    public GameFactory()
-    {
+    private readonly GameBoardFactory _gameBoardFactory;
+    private readonly PlayerFactory _playerFactory;
 
+    public GameFactory(GameBoardFactory gameBoardFactory,PlayerFactory playerFactory)
+    {
+        _gameBoardFactory = gameBoardFactory;
+        _playerFactory = playerFactory;
     }
 
-    internal GameEntity CreateGameEntity(IngameType type) => new(type);
+    internal GameEntity CreateEntity(IngameType type,GameBoardEntity gameBoardEntity,PlayerEntity playerEntity) => new(type,gameBoardEntity,playerEntity);
 
     public GameEntity Create(IngameType type)
     {
-        return CreateGameEntity(type);
+        return CreateEntity(
+            type,
+            _gameBoardFactory.Create(),
+            _playerFactory.Create()
+        );
     }
 }
