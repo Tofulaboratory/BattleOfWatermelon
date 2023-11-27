@@ -9,10 +9,20 @@ public class FruitFactory
 
     }
 
-    internal FruitEntity CreateFruitEntity() => new();
+    internal FruitEntity CreateEntity() => new();
 
     public FruitEntity Create()
     {
-        return CreateFruitEntity();
+        return CreateEntity();
+    }
+
+    public List<FruitEntity> CreateList(int num)
+    {
+        var ret = new List<FruitEntity>();
+        for(int i=0;i<num;i++){
+            ret.Add(CreateEntity());
+        }
+
+        return ret;
     }
 }

@@ -8,4 +8,11 @@ public class PlayerFactory
     {
         
     }
+
+    internal PlayerEntity CreateEntity() => new();
+
+    public PlayerEntity Create()
+    {
+        return CreateEntity();
+    }
 }
