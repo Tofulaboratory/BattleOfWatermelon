@@ -20,7 +20,6 @@ public class FruitFactory
     {
         var ret = new List<FruitEntity>();
         for(int i=0;i<num;i++){
-            Debug.Log("create");
             var entity = CreateEntity();
             ret.Add(entity);
         }
