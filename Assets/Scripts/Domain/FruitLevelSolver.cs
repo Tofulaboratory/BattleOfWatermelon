@@ -12,6 +12,6 @@ public class FruitLevelSolver
     internal int Solve()
     {
         //TODO 初期レベル算出
-        return Random.Range(1,3);
+        return Random.Range(0,3);
     }
 }

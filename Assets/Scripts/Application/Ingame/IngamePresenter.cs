@@ -8,12 +8,14 @@ public class IngamePresenter : IDisposable
 {
     private readonly CompositeDisposable _disposable = new();
 
+    private readonly IIngameView _ingameView;
     private readonly FruitFactory _fruitFactory;
     private readonly FruitSpawner _fruitSpawner;
     private readonly GameRegistry _gameRegistry;
 
-    public IngamePresenter(FruitFactory fruitFactory, FruitSpawner fruitSpawner, GameRegistry gameRegistry)
+    public IngamePresenter(IIngameView ingameView, FruitFactory fruitFactory, FruitSpawner fruitSpawner, GameRegistry gameRegistry)
     {
+        _ingameView = ingameView;
         _fruitSpawner = fruitSpawner;
         _gameRegistry = gameRegistry;
         _fruitFactory = fruitFactory;
@@ -24,13 +26,14 @@ public class IngamePresenter : IDisposable
     private void Initialize()
     {
         var gameEntity = _gameRegistry.CurrentGameEntity;
-        gameEntity?.Value.GameBoardEntity.InNextFruitEntity.Where(item => item != null).Subscribe(_ =>
+        gameEntity?.Value.GameBoardEntity.InNextFruitEntity.Where(item => item != null).Subscribe(item =>
         {
-            Debug.Log(_);
+            _ingameView.ApplyNextFrame(item);
         }).AddTo(_disposable);
-        gameEntity?.Value.GameBoardEntity.InHoldFruitEntity.Where(item => item != null).Subscribe(_ =>
+        gameEntity?.Value.GameBoardEntity.InHoldFruitEntity.Where(item => item != null).Subscribe(item =>
         {
-            Debug.Log(_);
+            //TODO
+            Debug.Log(item);
         }).AddTo(_disposable);
 
         gameEntity?.Value.CurrentGameState.Subscribe(state =>

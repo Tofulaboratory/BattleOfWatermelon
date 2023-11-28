@@ -135,6 +135,7 @@ GameObject:
   - component: {fileID: 69823205}
   - component: {fileID: 69823204}
   - component: {fileID: 69823203}
+  - component: {fileID: 69823207}
   m_Layer: 5
   m_Name: IngameView
   m_TagString: Untagged
@@ -226,6 +227,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &69823207
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 69823202}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18725e56d35058648b70e31578d1499d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fruitSpriteData: {fileID: 11400000, guid: 4297493ec0fba904cb8c1174347de0c7, type: 2}
+  nextFrameImage: {fileID: 1873769580}
 --- !u!1 &313354463
 GameObject:
   m_ObjectHideFlags: 0
@@ -598,6 +613,7 @@ MonoBehaviour:
   autoRun: 1
   autoInjectGameObjects: []
   _titleView: {fileID: 996221184}
+  _ingameView: {fileID: 69823207}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -2133,7 +2149,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 160, y: 120}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1873769580
 MonoBehaviour:
