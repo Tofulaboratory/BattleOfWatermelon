@@ -11,19 +11,23 @@ public class GameUsecase : IDisposable
 
     private readonly ITitleView _titleView;
 
-    private readonly GameFactory _gameFactory;
-
     private readonly GameRegistry _gameRegistry;
+
+    private readonly GameFactory _gameFactory;
 
     private TitlePresenter titlePresenter;
     private IngamePresenter ingamePresenter;
 
     [Inject]
-    public GameUsecase(ITitleView titleView, GameRegistry gameRegistry, GameBoardFactory gameBoardFactory,PlayerFactory playerFactory)
+    public GameUsecase(
+        ITitleView titleView, 
+        GameRegistry gameRegistry, 
+        GameFactory gameFactory
+        )
     {
         _titleView = titleView;
         _gameRegistry = gameRegistry;
-        _gameFactory = new GameFactory(gameBoardFactory,playerFactory);
+        _gameFactory = gameFactory;
 
         _gameRegistry.CurrentGameEntity.Subscribe(_=>{
             ExecuteGame();
@@ -43,6 +47,7 @@ public class GameUsecase : IDisposable
     public void Dispose()
     {
         titlePresenter.Dispose();
+        ingamePresenter.Dispose();
         _disposable.Dispose();
     }
 }
