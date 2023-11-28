@@ -22,7 +22,6 @@ public class CoreLifeTimeScope : LifetimeScope
         builder.Register<GameUsecase>(Lifetime.Scoped);
 
         builder.Register<PlayerSpawner>(Lifetime.Scoped);
-        builder.Register<FruitSpawner>(Lifetime.Scoped);
 
         builder.RegisterInstance(_titleView).As<ITitleView>();
     }

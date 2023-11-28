@@ -29,15 +29,16 @@ public class GameUsecase : IDisposable
         ITitleView titleView,
         GameRegistry gameRegistry,
         GameFactory gameFactory,
-        FruitFactory fruitFactory,
-        FruitSpawner fruitSpawner
+        FruitFactory fruitFactory
         )
     {
         _titleView = titleView;
         _gameRegistry = gameRegistry;
         _gameFactory = gameFactory;
         _fruitFactory = fruitFactory;
-        _fruitSpawner = fruitSpawner;
+
+        //TODO
+        _fruitSpawner = new FruitSpawner(null);
 
         _outgameState.Subscribe(state =>
         {
