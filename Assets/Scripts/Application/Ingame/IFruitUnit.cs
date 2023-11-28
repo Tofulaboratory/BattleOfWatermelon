@@ -4,4 +4,5 @@ using UnityEngine;
 
 public interface IFruitUnit
 {
+    public void Initialize(FruitEntity entity);
 }

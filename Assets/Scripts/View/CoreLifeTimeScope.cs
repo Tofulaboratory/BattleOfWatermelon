@@ -4,7 +4,7 @@ using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
-public class GameLifeTimeScope : LifetimeScope
+public class CoreLifeTimeScope : LifetimeScope
 {
 
     [SerializeField] private TitleView _titleView;
@@ -20,7 +20,10 @@ public class GameLifeTimeScope : LifetimeScope
 
         builder.RegisterEntryPoint<GameInitializer>();
         builder.Register<GameUsecase>(Lifetime.Scoped);
-    
+
+        builder.Register<PlayerSpawner>(Lifetime.Scoped);
+        builder.Register<FruitSpawner>(Lifetime.Scoped);
+
         builder.RegisterInstance(_titleView).As<ITitleView>();
     }
 }

@@ -4,4 +4,5 @@ using UnityEngine;
 
 public interface IPlayerUnit
 {
+    public void Initialize(PlayerEntity entity);
 }

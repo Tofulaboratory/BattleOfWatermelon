@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using VContainer;
 
 public class GameFactory
 {
     private readonly GameBoardFactory _gameBoardFactory;
     private readonly PlayerFactory _playerFactory;
 
+    [Inject]
     public GameFactory(GameBoardFactory gameBoardFactory,PlayerFactory playerFactory)
     {
         _gameBoardFactory = gameBoardFactory;

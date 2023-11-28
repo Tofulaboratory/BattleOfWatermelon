@@ -4,4 +4,8 @@ using UnityEngine;
 
 public class PlayerUnit : MonoBehaviour, IPlayerUnit
 {
+    public void Initialize(PlayerEntity entity)
+    {
+
+    }
 }

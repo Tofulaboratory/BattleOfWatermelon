@@ -4,4 +4,7 @@ using UnityEngine;
 
 public class FruitUnit : MonoBehaviour, IFruitUnit
 {
+    public void Initialize(FruitEntity entity)
+    {
+    }
 }
