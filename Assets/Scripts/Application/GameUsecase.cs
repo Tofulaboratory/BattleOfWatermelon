@@ -13,6 +13,7 @@ public class GameUsecase : IDisposable
     public void ChangeOutgameState(OutgameState state) => _outgameState.Value = state;
 
     private readonly ITitleView _titleView;
+    private readonly IIngameView _ingameView;
 
     private readonly GameRegistry _gameRegistry;
 
@@ -27,12 +28,14 @@ public class GameUsecase : IDisposable
     [Inject]
     public GameUsecase(
         ITitleView titleView,
+        IIngameView ingameView,
         GameRegistry gameRegistry,
         GameFactory gameFactory,
         FruitFactory fruitFactory
         )
     {
         _titleView = titleView;
+        _ingameView = ingameView;
         _gameRegistry = gameRegistry;
         _gameFactory = gameFactory;
         _fruitFactory = fruitFactory;
@@ -79,6 +82,7 @@ public class GameUsecase : IDisposable
     private void ExecuteIngame()
     {
         ingamePresenter = new IngamePresenter(
+            _ingameView,
             _fruitFactory,
             _fruitSpawner,
             _gameRegistry

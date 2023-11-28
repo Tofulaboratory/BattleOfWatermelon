@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: baec9965383ac8d44b40e5652d993c9f, type: 3}
+  m_Name: FruitSpriteData
+  m_EditorClassIdentifier: 
+  fruitSprites:
+  - {fileID: 21300000, guid: 095512c8fbf38ff4ea13cabd936ba661, type: 3}
+  - {fileID: 21300000, guid: 7abe1ace9a81d0945ab23775945c64e2, type: 3}
+  - {fileID: 21300000, guid: b17ec4c7ebc27684a89a9ea11953b43b, type: 3}
+  - {fileID: 21300000, guid: 9e0680c8bfff67d43ae9a4618d961dfe, type: 3}
+  - {fileID: 21300000, guid: 38e5cad2aa38e6e45b85fd07644c5dbb, type: 3}
+  - {fileID: 21300000, guid: aee0a216b4f281e4684b4e1801755079, type: 3}
+  - {fileID: 21300000, guid: bcd6afebf77132c49aefaa7be0da240b, type: 3}
+  - {fileID: 21300000, guid: b1ae22436e700df4a845f799adb2cacf, type: 3}
+  - {fileID: 21300000, guid: e24fb568a32f7084d8a453d003c0d0eb, type: 3}
+  - {fileID: 21300000, guid: aa16cd8ae5fb9d242bab7a677b5c681c, type: 3}
+  - {fileID: 21300000, guid: 5bc7b88f479d04743918e19e52d64f3f, type: 3}

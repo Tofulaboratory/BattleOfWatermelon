@@ -8,6 +8,7 @@ public class CoreLifeTimeScope : LifetimeScope
 {
 
     [SerializeField] private TitleView _titleView;
+    [SerializeField] private IngameView _ingameView;
 
     protected override void Configure(IContainerBuilder builder)
     {
@@ -24,5 +25,6 @@ public class CoreLifeTimeScope : LifetimeScope
         builder.Register<PlayerSpawner>(Lifetime.Scoped);
 
         builder.RegisterInstance(_titleView).As<ITitleView>();
+        builder.RegisterInstance(_ingameView).As<IIngameView>();
     }
 }
