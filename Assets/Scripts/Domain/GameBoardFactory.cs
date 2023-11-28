@@ -2,20 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UniRx;
 using UnityEngine;
+using VContainer;
 
 public class GameBoardFactory
 {
-    private readonly FruitFactory _fruitFactory;
-
-    public GameBoardFactory(FruitFactory fruitFactory)
+    public GameBoardFactory()
     {
-        _fruitFactory = fruitFactory;
     }
 
-    internal GameBoardEntity CreateEntity(List<FruitEntity> fruitEntities) => new(fruitEntities);
+    internal GameBoardEntity CreateEntity() => new();
 
     public GameBoardEntity Create()
     {
-        return CreateEntity(_fruitFactory.CreateList(ValueDefines.FRUIT_STOCK_NUM));
+        return CreateEntity();
     }
 }
