@@ -3,7 +3,7 @@ public enum IngameState {
     BEGIN,
     PROGRESS,
     JUDGE,
-    CHANGE_USER,
+    CHANGE_PLAYER,
     RESULT,
     END,   
 }

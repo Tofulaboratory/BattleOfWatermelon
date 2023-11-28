@@ -16,6 +16,6 @@ public class GameInitializer : IStartable
 
     public void Start()
     {
-        _gameUsecase.ExecuteTitle();
+        _gameUsecase.ChangeOutgameState(OutgameState.TITLE);
     }
 }
