@@ -5,7 +5,7 @@ using UniRx;
 using UnityEngine;
 using VContainer;
 
-public class GameController : IDisposable
+public class GameUsecase : IDisposable
 {
     private CompositeDisposable _disposable = new();
 
@@ -13,26 +13,31 @@ public class GameController : IDisposable
 
     private readonly GameFactory _gameFactory;
 
-    private readonly GameRepository _gameRepository;
+    private readonly GameRegistry _gameRegistry;
 
     private TitlePresenter titlePresenter;
+    private IngamePresenter ingamePresenter;
 
     [Inject]
-    public GameController(ITitleView titleView, GameRepository gameRepository, GameBoardFactory gameBoardFactory,PlayerFactory playerFactory)
+    public GameUsecase(ITitleView titleView, GameRegistry gameRegistry, GameBoardFactory gameBoardFactory,PlayerFactory playerFactory)
     {
         _titleView = titleView;
-        _gameRepository = gameRepository;
+        _gameRegistry = gameRegistry;
         _gameFactory = new GameFactory(gameBoardFactory,playerFactory);
+
+        _gameRegistry.CurrentGameEntity.Subscribe(_=>{
+            ExecuteGame();
+        }).AddTo(_disposable);
     }
 
     public void ExecuteTitle()
     {
-        titlePresenter = new TitlePresenter(_titleView,_gameFactory,_gameRepository);
+        titlePresenter = new TitlePresenter(_titleView,_gameFactory,_gameRegistry);
     }
 
     public void ExecuteGame()
     {
-        //TODO
+        ingamePresenter = new IngamePresenter();
     }
 
     public void Dispose()

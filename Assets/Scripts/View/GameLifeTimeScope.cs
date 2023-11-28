@@ -16,10 +16,10 @@ public class GameLifeTimeScope : LifetimeScope
         builder.Register<PlayerFactory>(Lifetime.Scoped);
         builder.Register<FruitFactory>(Lifetime.Scoped);
 
-        builder.Register<GameRepository>(Lifetime.Scoped);
+        builder.Register<GameRegistry>(Lifetime.Scoped);
 
         builder.RegisterEntryPoint<GameInitializer>();
-        builder.Register<GameController>(Lifetime.Scoped);
+        builder.Register<GameUsecase>(Lifetime.Scoped);
     
         builder.RegisterInstance(_titleView).As<ITitleView>();
     }
