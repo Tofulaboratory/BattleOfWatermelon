@@ -9,9 +9,6 @@ public class GameBoardEntity
     private readonly ReactiveCollection<FruitEntity> _inBoardFruitEntities = new();
     public IReadOnlyReactiveCollection<FruitEntity> InBoardFruitEntities => _inBoardFruitEntities;
 
-    private readonly ReactiveProperty<FruitEntity> _inHoldFruitEntity = new();
-    public IReadOnlyReactiveProperty<FruitEntity> InHoldFruitEntity => _inHoldFruitEntity;
-
     private readonly ReactiveProperty<FruitEntity> _inNextFruitEntity = new();
     public IReadOnlyReactiveProperty<FruitEntity> InNextFruitEntity => _inNextFruitEntity;
 
@@ -24,14 +21,14 @@ public class GameBoardEntity
 
     public void Initialize(FruitEntity inHoldFruit,FruitEntity inNextFruit)
     {
-        _inHoldFruitEntity.Value = inHoldFruit;
+        this.PlayerEntity.HoldFruit(inHoldFruit);
         _inNextFruitEntity.Value = inNextFruit;
     }
 
     public void MoveTurn(FruitEntity entity)
     {
-        _inBoardFruitEntities.Add(_inHoldFruitEntity.Value);
-        _inHoldFruitEntity.Value = _inNextFruitEntity.Value;
+        _inBoardFruitEntities.Add(this.PlayerEntity.HeldFruit.Value);
+        this.PlayerEntity.HoldFruit(_inNextFruitEntity.Value);
         _inNextFruitEntity.Value = entity;
     }
 

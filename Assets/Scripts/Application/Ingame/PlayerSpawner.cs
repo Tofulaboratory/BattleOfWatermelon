@@ -7,18 +7,18 @@ public class PlayerSpawner
 {
     private readonly GameObject _obj;
 
-    public PlayerSpawner(GameObject obj)
+    public PlayerSpawner()
     {
-        _obj = obj;
+         _obj = Resources.Load<GameObject>("Prefabs/PlayerUnit");
     }
 
-    public GameObject Spawn(PlayerEntity entity)
+    public IPlayerUnit Spawn(PlayerEntity entity)
     {
         var ret = UnityEngine.Object.Instantiate(_obj);
 
         var component = ret.GetComponent<IPlayerUnit>();
         component?.Initialize(entity);
 
-        return ret;
+        return component;
     }
 }

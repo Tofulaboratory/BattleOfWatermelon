@@ -11,29 +11,47 @@ public class IngamePresenter : IDisposable
     private readonly IIngameView _ingameView;
     private readonly FruitFactory _fruitFactory;
     private readonly FruitSpawner _fruitSpawner;
+    private readonly PlayerSpawner _playerSpawner;
     private readonly GameRegistry _gameRegistry;
 
-    public IngamePresenter(IIngameView ingameView, FruitFactory fruitFactory, FruitSpawner fruitSpawner, GameRegistry gameRegistry)
+    private readonly List<IPlayerUnit> _playerUnitList = new();
+
+    public IngamePresenter(
+        IIngameView ingameView, 
+        FruitFactory fruitFactory, 
+        FruitSpawner fruitSpawner,
+        PlayerSpawner playerSpawner, 
+        GameRegistry gameRegistry
+        )
     {
         _ingameView = ingameView;
         _fruitSpawner = fruitSpawner;
+        _playerSpawner = playerSpawner;
         _gameRegistry = gameRegistry;
         _fruitFactory = fruitFactory;
 
-        BindSubscription();
+        Bind();
     }
 
-    private void BindSubscription()
+    private void Bind()
     {
         var gameEntity = _gameRegistry.CurrentGameEntity;
+
+        //TODO 複数人対応
+        var playerEntity = gameEntity?.Value.GameBoardEntity.PlayerEntity;
+        if(playerEntity != null) _playerUnitList.Add(_playerSpawner.Spawn(playerEntity));
 
         gameEntity?.Value.GameBoardEntity.InNextFruitEntity.Where(item => item != null).Subscribe(item =>
         {
             _ingameView.ApplyNextFrame(item);
         }).AddTo(_disposable);
-        gameEntity?.Value.GameBoardEntity.InHoldFruitEntity.Where(item => item != null).Subscribe(item =>
+        gameEntity?.Value.GameBoardEntity.PlayerEntity.HeldFruit.Where(item => item != null).Subscribe(item =>
         {
-            _fruitSpawner.Spawn(item);
+            //TODO 複数人対応
+            var fruit = _fruitSpawner.Spawn(item);
+            _playerUnitList[0].HoldFruit(fruit);
+            fruit.SetVisible(true);
+            fruit.SetPosition(_playerUnitList[0].GetPosition());
         }).AddTo(_disposable);
 
         gameEntity?.Value.CurrentGameState.Subscribe(state =>
