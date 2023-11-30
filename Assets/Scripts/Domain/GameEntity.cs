@@ -8,18 +8,16 @@ public class GameEntity
 {
     public IngameType IngameType {get; private set;}
     public GameBoardEntity GameBoardEntity {get; private set;}
-    public PlayerEntity PlayerEntity {get; private set;}
 
     private readonly ReactiveProperty<IngameState> _ingameState = new();
     public IReadOnlyReactiveProperty<IngameState> CurrentGameState => _ingameState;
 
     public IngameStateSolver IngameStateSolver {get; private set;}
 
-    public GameEntity(IngameType ingameType,GameBoardEntity gameBoardEntity,PlayerEntity playerEntity)
+    public GameEntity(IngameType ingameType,GameBoardEntity gameBoardEntity)
     {
         this.IngameType = ingameType;
         this.GameBoardEntity = gameBoardEntity;
-        this.PlayerEntity = playerEntity;
 
         this.IngameStateSolver = new IngameStateSolver(this);
     }

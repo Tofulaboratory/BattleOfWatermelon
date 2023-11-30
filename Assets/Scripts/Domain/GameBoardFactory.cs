@@ -6,14 +6,18 @@ using VContainer;
 
 public class GameBoardFactory
 {
-    public GameBoardFactory()
+    private readonly PlayerFactory _playerFactory;
+
+    [Inject]
+    public GameBoardFactory(PlayerFactory playerFactory)
     {
+        _playerFactory = playerFactory;
     }
 
-    internal GameBoardEntity CreateEntity() => new();
+    internal GameBoardEntity CreateEntity(PlayerEntity playerEntity) => new(playerEntity);
 
-    public GameBoardEntity Create()
+    public GameBoardEntity Create(IngameType type)
     {
-        return CreateEntity();
+        return CreateEntity(_playerFactory.Create());
     }
 }
