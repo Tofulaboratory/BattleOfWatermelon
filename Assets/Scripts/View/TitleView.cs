@@ -5,13 +5,14 @@ using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TitleView : MonoBehaviour, ITitleView
+public class TitleView : ViewBase, ITitleView
 {
     [SerializeField] private Button startButton;
 
     public IObservable<Unit> OnClickStartButton() => startButton.OnClickAsObservable();
 
-    private void Start()
+    public void SetActive(bool isActivate)
     {
+        base.SetActiveCanvasGroup(isActivate);
     }
 }

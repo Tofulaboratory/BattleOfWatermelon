@@ -15,8 +15,11 @@ public class GameBoardEntity
     private readonly ReactiveProperty<FruitEntity> _inNextFruitEntity = new();
     public IReadOnlyReactiveProperty<FruitEntity> InNextFruitEntity => _inNextFruitEntity;
 
-    public GameBoardEntity()
+    public PlayerEntity PlayerEntity {get; private set;}
+
+    public GameBoardEntity(PlayerEntity playerEntity)
     {
+        this.PlayerEntity = playerEntity;
     }
 
     public void Initialize(FruitEntity inHoldFruit,FruitEntity inNextFruit)

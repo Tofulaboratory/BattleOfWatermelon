@@ -15,12 +15,18 @@ public class TitlePresenter : IDisposable
     public TitlePresenter(ITitleView titleView, GameFactory gameFactory, GameRegistry gameRegistry, Action onTransitionGame)
     {
         _titleView = titleView;
-        titleView.OnClickStartButton().Subscribe(_=>{
+        _titleView.OnClickStartButton().Subscribe(_=>{
             var entity = gameFactory.Create(IngameType.SINGLE);
             gameRegistry.Save(entity);
 
             onTransitionGame.Invoke();
+            _titleView.SetActive(false);
         }).AddTo(_disposable);
+    }
+
+    public void Initialize()
+    {
+        _titleView?.SetActive(true);
     }
 
     public void Dispose()

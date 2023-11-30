@@ -6,23 +6,20 @@ using VContainer;
 public class GameFactory
 {
     private readonly GameBoardFactory _gameBoardFactory;
-    private readonly PlayerFactory _playerFactory;
 
     [Inject]
-    public GameFactory(GameBoardFactory gameBoardFactory,PlayerFactory playerFactory)
+    public GameFactory(GameBoardFactory gameBoardFactory)
     {
         _gameBoardFactory = gameBoardFactory;
-        _playerFactory = playerFactory;
     }
 
-    internal GameEntity CreateEntity(IngameType type,GameBoardEntity gameBoardEntity,PlayerEntity playerEntity) => new(type,gameBoardEntity,playerEntity);
+    internal GameEntity CreateEntity(IngameType type,GameBoardEntity gameBoardEntity) => new(type,gameBoardEntity);
 
     public GameEntity Create(IngameType type)
     {
         return CreateEntity(
             type,
-            _gameBoardFactory.Create(),
-            _playerFactory.Create()
+            _gameBoardFactory.Create(type)
         );
     }
 }

@@ -19,7 +19,6 @@ public class GameUsecase : IDisposable
 
     private readonly GameFactory _gameFactory;
     private readonly FruitFactory _fruitFactory;
-
     private readonly FruitSpawner _fruitSpawner;
 
     private TitlePresenter titlePresenter;
@@ -40,8 +39,7 @@ public class GameUsecase : IDisposable
         _gameFactory = gameFactory;
         _fruitFactory = fruitFactory;
 
-        //TODO
-        _fruitSpawner = new FruitSpawner(null);
+        _fruitSpawner = new FruitSpawner();
 
         _outgameState.Subscribe(state =>
         {
@@ -71,22 +69,24 @@ public class GameUsecase : IDisposable
 
     private void ExecuteTitle()
     {
-        titlePresenter = new TitlePresenter(
+        titlePresenter ??= new TitlePresenter(
             _titleView,
             _gameFactory,
             _gameRegistry,
             () => ChangeOutgameState(OutgameState.MATCHING)
-            );
+        );
+        titlePresenter.Initialize();
     }
 
     private void ExecuteIngame()
     {
-        ingamePresenter = new IngamePresenter(
+        ingamePresenter ??= new IngamePresenter(
             _ingameView,
             _fruitFactory,
             _fruitSpawner,
             _gameRegistry
-            );
+        );
+        ingamePresenter?.Initialize();
     }
 
     public void Dispose()
