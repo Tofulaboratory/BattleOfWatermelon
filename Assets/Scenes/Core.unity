@@ -298,7 +298,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u30B9\u30A4\u30AB\u30D0\u30C8\u30EB"
+  m_text: "\u30B9\u30A4\u30AB\u30D0\u30C8\u30EB\n---\u30C9\u30E9\u30B4\u30F3\u30D5\u30EB\u30FC\u30C4\u3092\u6DFB\u3048\u3066---"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 38cc4c514e96f3c46bb5b221551f2e76, type: 2}
   m_sharedMaterial: {fileID: 7091676066979834847, guid: 38cc4c514e96f3c46bb5b221551f2e76, type: 2}
@@ -614,7 +614,6 @@ MonoBehaviour:
   autoInjectGameObjects: []
   _titleView: {fileID: 996221184}
   _ingameView: {fileID: 69823207}
-  _fruitUnit: {fileID: 1975222437772142990, guid: ec4cb67fcccc15d49988ab5afba47263, type: 3}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
