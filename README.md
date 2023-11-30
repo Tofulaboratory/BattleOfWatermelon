@@ -1,5 +1,6 @@
 # BattleOfWatermelon
 スイカバトル
+再配布不可のアセットは含めてません
 
 # Assets
 ・[VContainer](https://github.com/hadashiA/VContainer)
