@@ -5,4 +5,6 @@ using UnityEngine;
 public interface IFruitUnit
 {
     public void Initialize(FruitEntity entity);
+    public void SetVisible(bool isVisible);
+    public void SetPosition(Vector3 pos);
 }
