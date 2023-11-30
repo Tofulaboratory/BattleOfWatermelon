@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class IngameView : MonoBehaviour, IIngameView
+public class IngameView : ViewBase, IIngameView
 {
     [SerializeField] private FruitSpriteData fruitSpriteData;
 
@@ -19,5 +19,10 @@ public class IngameView : MonoBehaviour, IIngameView
     public void ApplyNextFrame(FruitEntity entity)
     {
         nextFrameImage.sprite = fruitSpriteData.Get(entity.Level.Value);
+    }
+
+    public void SetActive(bool isActivate)
+    {
+        base.SetActiveCanvasGroup(isActivate);
     }
 }

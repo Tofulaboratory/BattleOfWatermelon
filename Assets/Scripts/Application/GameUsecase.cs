@@ -69,22 +69,24 @@ public class GameUsecase : IDisposable
 
     private void ExecuteTitle()
     {
-        titlePresenter = new TitlePresenter(
+        titlePresenter ??= new TitlePresenter(
             _titleView,
             _gameFactory,
             _gameRegistry,
             () => ChangeOutgameState(OutgameState.MATCHING)
-            );
+        );
+        titlePresenter.Initialize();
     }
 
     private void ExecuteIngame()
     {
-        ingamePresenter = new IngamePresenter(
+        ingamePresenter ??= new IngamePresenter(
             _ingameView,
             _fruitFactory,
             _fruitSpawner,
             _gameRegistry
-            );
+        );
+        ingamePresenter?.Initialize();
     }
 
     public void Dispose()

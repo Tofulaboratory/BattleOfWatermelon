@@ -20,10 +20,10 @@ public class IngamePresenter : IDisposable
         _gameRegistry = gameRegistry;
         _fruitFactory = fruitFactory;
 
-        Initialize();
+        BindSubscription();
     }
 
-    private void Initialize()
+    private void BindSubscription()
     {
         var gameEntity = _gameRegistry.CurrentGameEntity;
 
@@ -65,6 +65,10 @@ public class IngamePresenter : IDisposable
         }).AddTo(_disposable);
     }
 
+    public void Initialize()
+    {
+        _ingameView.SetActive(true);
+    }
 
     public void Dispose()
     {
