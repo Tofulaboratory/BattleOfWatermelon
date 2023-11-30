@@ -26,14 +26,14 @@ public class IngamePresenter : IDisposable
     private void Initialize()
     {
         var gameEntity = _gameRegistry.CurrentGameEntity;
+
         gameEntity?.Value.GameBoardEntity.InNextFruitEntity.Where(item => item != null).Subscribe(item =>
         {
             _ingameView.ApplyNextFrame(item);
         }).AddTo(_disposable);
         gameEntity?.Value.GameBoardEntity.InHoldFruitEntity.Where(item => item != null).Subscribe(item =>
         {
-            //TODO
-            Debug.Log(item);
+            _fruitSpawner.Spawn(item);
         }).AddTo(_disposable);
 
         gameEntity?.Value.CurrentGameState.Subscribe(state =>

@@ -19,7 +19,6 @@ public class GameUsecase : IDisposable
 
     private readonly GameFactory _gameFactory;
     private readonly FruitFactory _fruitFactory;
-
     private readonly FruitSpawner _fruitSpawner;
 
     private TitlePresenter titlePresenter;
@@ -40,8 +39,7 @@ public class GameUsecase : IDisposable
         _gameFactory = gameFactory;
         _fruitFactory = fruitFactory;
 
-        //TODO
-        _fruitSpawner = new FruitSpawner(null);
+        _fruitSpawner = new FruitSpawner();
 
         _outgameState.Subscribe(state =>
         {

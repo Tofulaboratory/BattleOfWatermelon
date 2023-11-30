@@ -7,9 +7,9 @@ public class FruitSpawner
 {
     private readonly GameObject _obj;
 
-    public FruitSpawner(GameObject obj)
+    public FruitSpawner()
     {
-        _obj = obj;
+        _obj = Resources.Load<GameObject>("Prefabs/FruitUnit");
     }
 
     public GameObject Spawn(FruitEntity entity)
