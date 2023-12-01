@@ -17,10 +17,10 @@ public class IngamePresenter : IDisposable
     private readonly List<IPlayerUnit> _playerUnitList = new();
 
     public IngamePresenter(
-        IIngameView ingameView, 
-        FruitFactory fruitFactory, 
+        IIngameView ingameView,
+        FruitFactory fruitFactory,
         FruitSpawner fruitSpawner,
-        PlayerSpawner playerSpawner, 
+        PlayerSpawner playerSpawner,
         GameRegistry gameRegistry
         )
     {
@@ -39,7 +39,7 @@ public class IngamePresenter : IDisposable
 
         //TODO 複数人対応
         var playerEntity = gameEntity?.Value.GameBoardEntity.PlayerEntity;
-        if(playerEntity != null) _playerUnitList.Add(_playerSpawner.Spawn(playerEntity));
+        if (playerEntity != null) _playerUnitList.Add(_playerSpawner.Spawn(playerEntity));
 
         gameEntity?.Value.GameBoardEntity.InNextFruitEntity.Where(item => item != null).Subscribe(item =>
         {
@@ -81,6 +81,14 @@ public class IngamePresenter : IDisposable
                     break;
             }
         }).AddTo(_disposable);
+
+        InputEventProvider.Instance.MoveDirectionX.Where(_ =>
+            gameEntity?.Value.CurrentGameState.Value == IngameState.PROGRESS ||
+            gameEntity?.Value.CurrentGameState.Value == IngameState.JUDGE
+            ).Subscribe(value =>
+            {
+                //TODO プレイヤー移動
+            }).AddTo(_disposable);
     }
 
     public void Initialize()
