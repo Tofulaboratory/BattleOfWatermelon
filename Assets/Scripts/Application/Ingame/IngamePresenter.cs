@@ -125,6 +125,8 @@ public class IngamePresenter : IDisposable
         //TODO 判定処理
         await UniTask.Delay(500);
 
+        //TODO GameEntityに集約
+        entity?.GameBoardEntity.MoveTurn(_fruitFactory.Create());
         entity?.ChangeGameState(IngameState.PROGRESS);
     }
 
