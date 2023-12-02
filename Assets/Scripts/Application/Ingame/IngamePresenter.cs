@@ -46,13 +46,16 @@ public class IngamePresenter : IDisposable
         {
             _ingameView.ApplyNextFrame(item);
         }).AddTo(_disposable);
+
         gameEntity?.GameBoardEntity.PlayerEntity.HeldFruit.Where(item => item != null).Subscribe(item =>
         {
             //TODO 複数人対応
             var fruit = _fruitSpawner.Spawn(item);
-            _playerUnitList[0].HoldFruit(fruit);
+            var player = _playerUnitList[0];
+            player.HoldFruit(fruit);
             fruit.SetVisible(true);
-            fruit.SetPosition(_playerUnitList[0].GetPosition());
+            fruit.SetPosition(player.GetPosition());
+            fruit.SetParent(player.GetTransform());
         }).AddTo(_disposable);
 
         gameEntity?.CurrentGameState.Subscribe(async state =>
@@ -69,6 +72,7 @@ public class IngamePresenter : IDisposable
                 case IngameState.PROGRESS:
                     break;
                 case IngameState.JUDGE:
+                    await ExecuteJUDGE(gameEntity);
                     break;
                 case IngameState.CHANGE_PLAYER:
                     break;
@@ -81,13 +85,20 @@ public class IngamePresenter : IDisposable
             }
         }).AddTo(_disposable);
 
-        InputEventProvider.Instance.GetHorizontal.Where(_ =>
+        InputEventProvider.Instance.GetHorizontalObservable.Where(_ =>
             gameEntity?.CurrentGameState.Value == IngameState.PROGRESS ||
             gameEntity?.CurrentGameState.Value == IngameState.JUDGE
             ).Subscribe(value =>
             {
-                Debug.Log(value);
                 _playerUnitList[0].MovePosition(value);
+            }).AddTo(_disposable);
+
+        InputEventProvider.Instance.GetKeyDownSpaceObservable.Where(_ =>
+            gameEntity?.CurrentGameState.Value == IngameState.PROGRESS
+            ).Subscribe(value =>
+            {
+                _playerUnitList[0].ReleaseFruit();
+                gameEntity?.Judge();
             }).AddTo(_disposable);
     }
 
@@ -106,6 +117,16 @@ public class IngamePresenter : IDisposable
         //TODO 表示待ち
         await UniTask.Delay(500);
 
+        entity?.ChangeGameState(IngameState.PROGRESS);
+    }
+
+    private async UniTask ExecuteJUDGE(GameEntity entity)
+    {
+        //TODO 判定処理
+        await UniTask.Delay(500);
+
+        //TODO GameEntityに集約
+        entity?.GameBoardEntity.MoveTurn(_fruitFactory.Create());
         entity?.ChangeGameState(IngameState.PROGRESS);
     }
 

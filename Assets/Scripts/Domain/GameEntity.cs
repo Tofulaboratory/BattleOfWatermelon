@@ -38,6 +38,12 @@ public class GameEntity
         _ingameState.Value = state;
     }
 
+
+    public void Judge()
+    {
+        ChangeGameState(IngameState.JUDGE);
+    }
+
     // public void SolveGameState()
     // {
     //     _ingameState.Value = this.IngameStateSolver.Solve();

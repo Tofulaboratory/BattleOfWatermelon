@@ -21,8 +21,14 @@ public class FruitUnit : MonoBehaviour, IFruitUnit
 
         _isHold.Subscribe(value =>
         {
-            rigidbody2D.simulated = value;
+            rigidbody2D.simulated = !value;
         }).AddTo(this);
+    }
+
+    public void SetHold(bool value)
+    {
+        _isHold.Value = value;
+        if(!value) SetParent(null);
     }
 
     public void SetVisible(bool isVisible)
@@ -33,5 +39,10 @@ public class FruitUnit : MonoBehaviour, IFruitUnit
     public void SetPosition(Vector3 pos)
     {
         transform.position = pos;
+    }
+
+    public void SetParent(Transform parent)
+    {
+        transform.parent = parent;
     }
 }
