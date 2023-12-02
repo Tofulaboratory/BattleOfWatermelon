@@ -18,6 +18,13 @@ public class PlayerUnit : MonoBehaviour, IPlayerUnit
     public void HoldFruit(IFruitUnit fruitUnit)
     {
         _heldFruit.Value = fruitUnit;
+        _heldFruit.Value.SetHold(true);
+    }
+
+    public void ReleaseFruit()
+    {
+        _heldFruit.Value.SetHold(false);
+        _heldFruit.Value = null;
     }
 
     public Vector3 GetPosition()

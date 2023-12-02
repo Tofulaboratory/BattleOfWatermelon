@@ -21,8 +21,14 @@ public class FruitUnit : MonoBehaviour, IFruitUnit
 
         _isHold.Subscribe(value =>
         {
-            rigidbody2D.simulated = value;
+            rigidbody2D.simulated = !value;
         }).AddTo(this);
+    }
+
+    public void SetHold(bool value)
+    {
+        _isHold.Value = value;
+        if(!value) SetParent(null);
     }
 
     public void SetVisible(bool isVisible)

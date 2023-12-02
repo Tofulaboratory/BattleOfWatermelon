@@ -9,4 +9,5 @@ public interface IPlayerUnit
     public Vector3 GetPosition();
     public void MovePosition(float direction);
     public Transform GetTransform();
+    public void ReleaseFruit();
 }
