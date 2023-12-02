@@ -45,7 +45,7 @@ public class GameUsecase : IDisposable
 
         _outgameState.Subscribe(state =>
         {
-            Debug.Log(state);
+            //Debug.Log(state);
             switch (state)
             {
                 case OutgameState.TITLE:

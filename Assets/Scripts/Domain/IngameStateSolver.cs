@@ -13,6 +13,7 @@ public class IngameStateSolver
 
     internal IngameState Solve()
     {
-        return IngameState.READY;
+        var ret = IngameState.READY;
+        return ret;
     }
 }
