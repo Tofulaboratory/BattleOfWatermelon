@@ -46,13 +46,16 @@ public class IngamePresenter : IDisposable
         {
             _ingameView.ApplyNextFrame(item);
         }).AddTo(_disposable);
+
         gameEntity?.GameBoardEntity.PlayerEntity.HeldFruit.Where(item => item != null).Subscribe(item =>
         {
             //TODO 複数人対応
             var fruit = _fruitSpawner.Spawn(item);
-            _playerUnitList[0].HoldFruit(fruit);
+            var player = _playerUnitList[0];
+            player.HoldFruit(fruit);
             fruit.SetVisible(true);
-            fruit.SetPosition(_playerUnitList[0].GetPosition());
+            fruit.SetPosition(player.GetPosition());
+            fruit.SetParent(player.GetTransform());
         }).AddTo(_disposable);
 
         gameEntity?.CurrentGameState.Subscribe(async state =>
@@ -86,7 +89,6 @@ public class IngamePresenter : IDisposable
             gameEntity?.CurrentGameState.Value == IngameState.JUDGE
             ).Subscribe(value =>
             {
-                Debug.Log(value);
                 _playerUnitList[0].MovePosition(value);
             }).AddTo(_disposable);
     }

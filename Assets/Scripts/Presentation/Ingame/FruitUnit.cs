@@ -34,4 +34,9 @@ public class FruitUnit : MonoBehaviour, IFruitUnit
     {
         transform.position = pos;
     }
+
+    public void SetParent(Transform parent)
+    {
+        transform.parent = parent;
+    }
 }

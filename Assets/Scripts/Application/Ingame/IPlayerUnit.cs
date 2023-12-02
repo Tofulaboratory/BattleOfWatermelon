@@ -8,4 +8,5 @@ public interface IPlayerUnit
     public void HoldFruit(IFruitUnit fruitUnit);
     public Vector3 GetPosition();
     public void MovePosition(float direction);
+    public Transform GetTransform();
 }

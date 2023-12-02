@@ -30,4 +30,9 @@ public class PlayerUnit : MonoBehaviour, IPlayerUnit
         //TODO 値定義
         transform.position += Vector3.right*direction*0.01f;
     }
+
+    public Transform GetTransform()
+    {
+        return transform;
+    }
 }
