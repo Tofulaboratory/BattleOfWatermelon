@@ -3,19 +3,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UniRx;
 using UnityEngine;
+using UniRx.Triggers;
 
 public class InputEventProvider : SingletonMonoBehaviour<InputEventProvider>
 {
-    private readonly ReactiveProperty<float> moveDirectionX = new();
-    public IReadOnlyReactiveProperty<float> MoveDirectionX => moveDirectionX;
+    public IObservable<float> GetHorizontal {get; private set;}
 
     protected override void Awake()
     {
         base.Awake();
-    }
 
-    private void Update()
-    {
-        moveDirectionX.Value = Input.GetAxis("Horizontal");
+        GetHorizontal = this.UpdateAsObservable()
+            .Where(_ => Input.GetAxis("Horizontal") != 0)
+            .Select(value => Input.GetAxis("Horizontal"));
     }
 }

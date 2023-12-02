@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using UniRx;
 using UnityEngine;
 
@@ -35,17 +36,17 @@ public class IngamePresenter : IDisposable
 
     private void Bind()
     {
-        var gameEntity = _gameRegistry.CurrentGameEntity;
+        var gameEntity = _gameRegistry.CurrentGameEntity?.Value;
 
         //TODO 複数人対応
-        var playerEntity = gameEntity?.Value.GameBoardEntity.PlayerEntity;
+        var playerEntity = gameEntity?.GameBoardEntity.PlayerEntity;
         if (playerEntity != null) _playerUnitList.Add(_playerSpawner.Spawn(playerEntity));
 
-        gameEntity?.Value.GameBoardEntity.InNextFruitEntity.Where(item => item != null).Subscribe(item =>
+        gameEntity?.GameBoardEntity.InNextFruitEntity.Where(item => item != null).Subscribe(item =>
         {
             _ingameView.ApplyNextFrame(item);
         }).AddTo(_disposable);
-        gameEntity?.Value.GameBoardEntity.PlayerEntity.HeldFruit.Where(item => item != null).Subscribe(item =>
+        gameEntity?.GameBoardEntity.PlayerEntity.HeldFruit.Where(item => item != null).Subscribe(item =>
         {
             //TODO 複数人対応
             var fruit = _fruitSpawner.Spawn(item);
@@ -54,18 +55,16 @@ public class IngamePresenter : IDisposable
             fruit.SetPosition(_playerUnitList[0].GetPosition());
         }).AddTo(_disposable);
 
-        gameEntity?.Value.CurrentGameState.Subscribe(state =>
+        gameEntity?.CurrentGameState.Subscribe(async state =>
         {
+            Debug.Log(state);
             switch (state)
             {
                 case IngameState.READY:
-                    gameEntity?.Value.GameBoardEntity.Initialize(
-                        _fruitFactory.Create(),
-                        _fruitFactory.Create()
-                    );
-
+                    await ExecuteREADY(gameEntity);
                     break;
                 case IngameState.BEGIN:
+                    await ExecuteBEGIN(gameEntity);
                     break;
                 case IngameState.PROGRESS:
                     break;
@@ -82,13 +81,32 @@ public class IngamePresenter : IDisposable
             }
         }).AddTo(_disposable);
 
-        InputEventProvider.Instance.MoveDirectionX.Where(_ =>
-            gameEntity?.Value.CurrentGameState.Value == IngameState.PROGRESS ||
-            gameEntity?.Value.CurrentGameState.Value == IngameState.JUDGE
+        InputEventProvider.Instance.GetHorizontal.Where(_ =>
+            gameEntity?.CurrentGameState.Value == IngameState.PROGRESS ||
+            gameEntity?.CurrentGameState.Value == IngameState.JUDGE
             ).Subscribe(value =>
             {
-                //TODO プレイヤー移動
+                Debug.Log(value);
+                _playerUnitList[0].MovePosition(value);
             }).AddTo(_disposable);
+    }
+
+    private async UniTask ExecuteREADY(GameEntity entity)
+    {
+        await UniTask.Delay(1);
+
+        entity?.Initialize(
+            _fruitFactory.Create(),
+            _fruitFactory.Create()
+        );
+    }
+
+    private async UniTask ExecuteBEGIN(GameEntity entity)
+    {
+        //TODO 表示待ち
+        await UniTask.Delay(500);
+
+        entity?.ChangeGameState(IngameState.PROGRESS);
     }
 
     public void Initialize()

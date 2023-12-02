@@ -7,4 +7,5 @@ public interface IPlayerUnit
     public void Initialize(PlayerEntity entity);
     public void HoldFruit(IFruitUnit fruitUnit);
     public Vector3 GetPosition();
+    public void MovePosition(float direction);
 }

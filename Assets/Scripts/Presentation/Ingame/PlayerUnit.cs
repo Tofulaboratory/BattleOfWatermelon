@@ -24,4 +24,10 @@ public class PlayerUnit : MonoBehaviour, IPlayerUnit
     {
         return transform.position;
     }
+
+    public void MovePosition(float direction)
+    {
+        //TODO 値定義
+        transform.position += Vector3.right*direction*0.01f;
+    }
 }
