@@ -1,6 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
+using JetBrains.Annotations;
 using UniRx;
+using UniRx.Triggers;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -10,25 +14,52 @@ public class FruitUnit : MonoBehaviour, IFruitUnit
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private Rigidbody2D rigidbody2D;
 
-    private readonly ReactiveProperty<bool> _isHold = new();
+    private Subject<string> _onRemove = new();
+    public IObservable<string> OnRemove() => _onRemove;
+
+    private FruitEntity _fruitEntity;
+    public int GetFruitLevel() => _fruitEntity.Level.Value;
 
     public void Initialize(FruitEntity entity)
     {
+        _fruitEntity = entity;
         spriteRenderer.sprite = fruitSpriteData.Get(entity.Level.Value);
 
         //当たり判定の生成のため
         this.AddComponent<PolygonCollider2D>();
 
-        _isHold.Subscribe(value =>
+        var onCollidion = this.OnCollisionEnter2DAsObservable();
+        onCollidion.Subscribe(col =>
         {
-            rigidbody2D.simulated = !value;
+            var collidedFruit = col.gameObject.GetComponent<IFruitUnit>();
+            if (collidedFruit == null) return;
+            if (collidedFruit.GetFruitLevel() != GetFruitLevel()) return;
+            _onRemove.OnNext(entity.ID);
+            entity.Harvest(new Vector2(transform.position.x,transform.position.y));
+
+            Destroy(col.gameObject);
+        }).AddTo(this);
+
+        _fruitEntity.State.Subscribe(value =>
+        {
+            rigidbody2D.simulated = value != FruitState.HOLD;
+
+            switch (value)
+            {
+                case FruitState.HOLD:
+                    break;
+                case FruitState.FALL:
+                    SetParent(null);
+                    break;
+                default:
+                    break;
+            }
         }).AddTo(this);
     }
 
     public void SetHold(bool value)
     {
-        _isHold.Value = value;
-        if(!value) SetParent(null);
+        _fruitEntity.SetHold(value);
     }
 
     public void SetVisible(bool isVisible)

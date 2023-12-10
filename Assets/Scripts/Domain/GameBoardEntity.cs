@@ -9,17 +9,20 @@ public class GameBoardEntity
     private readonly ReactiveCollection<FruitEntity> _inBoardFruitEntities = new();
     public IReadOnlyReactiveCollection<FruitEntity> InBoardFruitEntities => _inBoardFruitEntities;
 
+    private readonly ReactiveCollection<FruitEntity> _hervestFruitEntities = new();
+    public IReadOnlyReactiveCollection<FruitEntity> HervestFruitEntities => _hervestFruitEntities;
+
     private readonly ReactiveProperty<FruitEntity> _inNextFruitEntity = new();
     public IReadOnlyReactiveProperty<FruitEntity> InNextFruitEntity => _inNextFruitEntity;
 
-    public PlayerEntity PlayerEntity {get; private set;}
+    public PlayerEntity PlayerEntity { get; private set; }
 
     public GameBoardEntity(PlayerEntity playerEntity)
     {
         this.PlayerEntity = playerEntity;
     }
 
-    public void Initialize(FruitEntity inHoldFruit,FruitEntity inNextFruit)
+    public void Initialize(FruitEntity inHoldFruit, FruitEntity inNextFruit)
     {
         this.PlayerEntity.HoldFruit(inHoldFruit);
         _inNextFruitEntity.Value = inNextFruit;
@@ -32,12 +35,60 @@ public class GameBoardEntity
         _inNextFruitEntity.Value = entity;
     }
 
-    public void RemoveInBoardFruitIndex(string id)
+    public void HervestFruits(string id)
     {
-        var entities = _inBoardFruitEntities.Where(item=>item.ID==id).ToList();
-        if(entities.Count>=1)
+        HervestInBoardFruitIndex(id);
+    }
+
+    public void InsertFruit(FruitEntity entity)
+    {
+        _inBoardFruitEntities.Add(entity);
+    }
+
+    private void RemoveInBoardFruitIndex(string id)
+    {
+        var entity = FindInBoardFruitIndex(id);
+        if (entity != null) _inBoardFruitEntities.Remove(entity);
+    }
+
+    private void HervestInBoardFruitIndex(string id)
+    {
+        var entity = FindInBoardFruitIndex(id);
+        if (entity != null)
         {
-            _inBoardFruitEntities.Remove(entities[0]);
+            _hervestFruitEntities.Add(entity);
+            _inBoardFruitEntities.Remove(entity);
         }
+    }
+
+    private FruitEntity FindInBoardFruitIndex(string id)
+    {
+        var entities = _inBoardFruitEntities.Where(item => item.ID == id).ToList();
+        if (entities.Count >= 1)
+        {
+            return entities[0];
+        }
+
+        return null;
+    }
+
+    public (int, Vector2) MergeFruit()
+    {
+        for (var i = 0; i < _hervestFruitEntities.Count; i++)
+        {
+            for (var j = i + 1; j < _hervestFruitEntities.Count; j++)
+            {
+                if (_hervestFruitEntities[i].Level.Value == _hervestFruitEntities[j].Level.Value)
+                {
+                    var level = _hervestFruitEntities[i].Level.Value;
+                    var position = (_hervestFruitEntities[i].Position - _hervestFruitEntities[j].Position);
+                    _hervestFruitEntities.RemoveAt(j);
+                    _hervestFruitEntities.RemoveAt(i);
+                    return (level, position);
+                }
+            }
+        }
+
+        return (-1, Vector2.zero);
     }
 }

@@ -1,9 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
+using UniRx;
 using UnityEngine;
 
 public interface IFruitUnit
 {
+    public IObservable<string> OnRemove();
+    public int GetFruitLevel();
     public void Initialize(FruitEntity entity);
     public void SetHold(bool value);
     public void SetVisible(bool isVisible);
