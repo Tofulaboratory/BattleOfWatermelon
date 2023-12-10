@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using JetBrains.Annotations;
 using UniRx;
 using UniRx.Triggers;
 using Unity.VisualScripting;
@@ -34,6 +35,7 @@ public class FruitUnit : MonoBehaviour, IFruitUnit
             if (collidedFruit == null) return;
             if (collidedFruit.GetFruitLevel() != GetFruitLevel()) return;
             _onRemove.OnNext(entity.ID);
+            entity.Harvest(new Vector2(transform.position.x,transform.position.y));
 
             Destroy(col.gameObject);
         }).AddTo(this);

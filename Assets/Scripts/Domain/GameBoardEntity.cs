@@ -72,22 +72,23 @@ public class GameBoardEntity
         return null;
     }
 
-    public int MergeFruit()
+    public (int, Vector2) MergeFruit()
     {
         for (var i = 0; i < _hervestFruitEntities.Count; i++)
         {
-            for (var j = i+1; j < _hervestFruitEntities.Count; j++)
+            for (var j = i + 1; j < _hervestFruitEntities.Count; j++)
             {
                 if (_hervestFruitEntities[i].Level.Value == _hervestFruitEntities[j].Level.Value)
                 {
-                    var ret = _hervestFruitEntities[i].Level.Value;
+                    var level = _hervestFruitEntities[i].Level.Value;
+                    var position = (_hervestFruitEntities[i].Position - _hervestFruitEntities[j].Position);
                     _hervestFruitEntities.RemoveAt(j);
                     _hervestFruitEntities.RemoveAt(i);
-                    return ret;
+                    return (level, position);
                 }
             }
         }
 
-        return -1;
+        return (-1, Vector2.zero);
     }
 }

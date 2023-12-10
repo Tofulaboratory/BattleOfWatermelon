@@ -49,7 +49,7 @@ public class GameEntity
         GameBoardEntity.HervestFruits(id);
     }
 
-    public int TryMergeFruits()
+    public (int,Vector2) TryMergeFruits()
     {
         return GameBoardEntity.MergeFruit();
     }

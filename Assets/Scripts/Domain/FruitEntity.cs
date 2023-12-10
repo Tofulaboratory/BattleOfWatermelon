@@ -13,6 +13,8 @@ public class FruitEntity
     private readonly ReactiveProperty<FruitState> _state = new();
     public IReadOnlyReactiveProperty<FruitState> State => _state;
 
+    public Vector2 Position { get; private set; }
+
     public FruitLevelSolver fruitLevelSolver { get; private set; }
 
     public FruitEntity(int level)
@@ -20,7 +22,7 @@ public class FruitEntity
         ID = Guid.NewGuid().ToString();
 
         fruitLevelSolver = new FruitLevelSolver();
-        _level.Value = level>=0 ? level:fruitLevelSolver.Solve();
+        _level.Value = level >= 0 ? level : fruitLevelSolver.Solve();
     }
 
     public bool IsMaxLevel() => _level.Value >= ValueDefines.MAX_FRUIT_LEVEL;
@@ -30,5 +32,9 @@ public class FruitEntity
     public void SetHold(bool value) => _state.Value = value ? FruitState.HOLD : FruitState.FALL;
 
     public void StandBy() => _state.Value = FruitState.STANDBY;
-    public void Harvest() => _state.Value = FruitState.HARVEST;
+    public void Harvest(Vector2 position)
+    {
+        Position = position;
+        _state.Value = FruitState.HARVEST;
+    }
 }

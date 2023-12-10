@@ -55,7 +55,8 @@ public class IngamePresenter : IDisposable
             fruit.SetVisible(true);
             fruit.SetPosition(player.GetPosition());
             fruit.SetParent(player.GetTransform());
-            fruit.OnRemove().Subscribe(value=>{
+            fruit.OnRemove().Subscribe(value =>
+            {
                 gameEntity?.HervestFruits(value);
             }).AddTo(_disposable);
         }).AddTo(_disposable);
@@ -87,17 +88,20 @@ public class IngamePresenter : IDisposable
             }
         }).AddTo(_disposable);
 
-        gameEntity?.GameBoardEntity.HervestFruitEntities.ObserveAdd().Subscribe(value=>{
-            var level = gameEntity.TryMergeFruits();
-            if(level<0) return;
+        gameEntity?.GameBoardEntity.HervestFruitEntities.ObserveAdd().Subscribe(value =>
+        {
+            var data = gameEntity.TryMergeFruits();
+            if (data.Item1 < 0) return;
 
-            var entity = _fruitFactory.Create(level+1);
+            var entity = _fruitFactory.Create(data.Item1 + 1);
             gameEntity?.GameBoardEntity.InsertFruit(entity);
 
             var fruit = _fruitSpawner.Spawn(entity);
             fruit.SetVisible(true);
             fruit.SetHold(false);
-            fruit.OnRemove().Subscribe(value=>{
+            fruit.SetPosition(data.Item2);
+            fruit.OnRemove().Subscribe(value =>
+            {
                 gameEntity?.HervestFruits(value);
             }).AddTo(_disposable);
         }).AddTo(_disposable);
