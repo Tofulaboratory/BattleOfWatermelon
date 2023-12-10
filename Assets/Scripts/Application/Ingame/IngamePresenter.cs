@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UniRx;
@@ -56,6 +55,9 @@ public class IngamePresenter : IDisposable
             fruit.SetVisible(true);
             fruit.SetPosition(player.GetPosition());
             fruit.SetParent(player.GetTransform());
+            fruit.OnRemove().Subscribe(value=>{
+                gameEntity?.HervestFruits(value);
+            }).AddTo(_disposable);
         }).AddTo(_disposable);
 
         gameEntity?.CurrentGameState.Subscribe(async state =>
@@ -83,6 +85,21 @@ public class IngamePresenter : IDisposable
                 default:
                     break;
             }
+        }).AddTo(_disposable);
+
+        gameEntity?.GameBoardEntity.HervestFruitEntities.ObserveAdd().Subscribe(value=>{
+            var level = gameEntity.TryMergeFruits();
+            if(level<0) return;
+
+            var entity = _fruitFactory.Create(level+1);
+            gameEntity?.GameBoardEntity.InsertFruit(entity);
+
+            var fruit = _fruitSpawner.Spawn(entity);
+            fruit.SetVisible(true);
+            fruit.SetHold(false);
+            fruit.OnRemove().Subscribe(value=>{
+                gameEntity?.HervestFruits(value);
+            }).AddTo(_disposable);
         }).AddTo(_disposable);
 
         InputEventProvider.Instance.GetHorizontalObservable.Where(_ =>

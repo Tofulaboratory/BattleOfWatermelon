@@ -1,27 +1,34 @@
 using System;
 using Cysharp.Threading.Tasks;
 using UniRx;
+using UnityEngine;
 
 public class FruitEntity
 {
-    public string ID {get; private set;}
+    public string ID { get; private set; }
 
     private readonly ReactiveProperty<int> _level = new();
     public IReadOnlyReactiveProperty<int> Level => _level;
 
-    public FruitLevelSolver fruitLevelSolver {get; private set;}
+    private readonly ReactiveProperty<FruitState> _state = new();
+    public IReadOnlyReactiveProperty<FruitState> State => _state;
 
-    public FruitEntity(){
+    public FruitLevelSolver fruitLevelSolver { get; private set; }
+
+    public FruitEntity(int level)
+    {
         ID = Guid.NewGuid().ToString();
 
         fruitLevelSolver = new FruitLevelSolver();
-        _level.Value = fruitLevelSolver.Solve();
+        _level.Value = level>=0 ? level:fruitLevelSolver.Solve();
     }
 
-    public bool IsMaxLevel() => _level.Value>=ValueDefines.MAX_FRUIT_LEVEL;
+    public bool IsMaxLevel() => _level.Value >= ValueDefines.MAX_FRUIT_LEVEL;
 
-    public void IncrementLevel()
-    {
-        _level.Value ++;
-    }
+    public void IncrementLevel() => _level.Value++;
+
+    public void SetHold(bool value) => _state.Value = value ? FruitState.HOLD : FruitState.FALL;
+
+    public void StandBy() => _state.Value = FruitState.STANDBY;
+    public void Harvest() => _state.Value = FruitState.HARVEST;
 }

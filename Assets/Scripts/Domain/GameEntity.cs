@@ -23,7 +23,7 @@ public class GameEntity
         this.IngameStateSolver = new IngameStateSolver(this);
     }
 
-    public void Initialize(FruitEntity hold,FruitEntity next)
+    public void Initialize(FruitEntity hold, FruitEntity next)
     {
         this.GameBoardEntity.Initialize(
             hold,
@@ -42,6 +42,16 @@ public class GameEntity
     public void Judge()
     {
         ChangeGameState(IngameState.JUDGE);
+    }
+
+    public void HervestFruits(string id)
+    {
+        GameBoardEntity.HervestFruits(id);
+    }
+
+    public int TryMergeFruits()
+    {
+        return GameBoardEntity.MergeFruit();
     }
 
     // public void SolveGameState()

@@ -3,5 +3,4 @@ public enum FruitState {
     FALL,
     STANDBY,
     HARVEST,
-    REMOVE,
 }
