@@ -1,6 +1,7 @@
 public enum FruitState {
     HOLD,
     FALL,
-    IDLE,
+    STANDBY,
+    HARVEST,
     REMOVE,
 }
