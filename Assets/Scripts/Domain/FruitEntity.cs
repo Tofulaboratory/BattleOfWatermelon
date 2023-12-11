@@ -17,15 +17,16 @@ public class FruitEntity
 
     public FruitLevelSolver fruitLevelSolver { get; private set; }
 
-    public FruitEntity(int level)
+    public FruitEntity(int level, FruitState fruitState = FruitState.HOLD)
     {
         ID = Guid.NewGuid().ToString();
 
         fruitLevelSolver = new FruitLevelSolver();
         _level.Value = level >= 0 ? level : fruitLevelSolver.Solve();
+        _state.Value = fruitState;
     }
 
-    public void SetHold(bool value) => _state.Value = value ? FruitState.HOLD : FruitState.FALL;
+    public void Release() => _state.Value = FruitState.FALL;
 
     public void StandBy() => _state.Value = FruitState.STANDBY;
 

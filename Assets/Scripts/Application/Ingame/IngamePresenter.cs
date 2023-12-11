@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using UniRx;
 using UnityEngine;
@@ -7,6 +8,7 @@ using UnityEngine;
 public class IngamePresenter : IDisposable
 {
     private readonly CompositeDisposable _disposable = new();
+    private CancellationTokenSource _commonCts = new();
 
     private readonly IIngameView _ingameView;
     private readonly FruitFactory _fruitFactory;
@@ -49,16 +51,9 @@ public class IngamePresenter : IDisposable
         gameEntity?.GameBoardEntity.PlayerEntity.HeldFruit.Where(item => item != null).Subscribe(item =>
         {
             //TODO 複数人対応
-            var fruit = _fruitSpawner.Spawn(item);
             var player = _playerUnitList[0];
-            player.HoldFruit(fruit);
-            fruit.SetVisible(true);
-            fruit.SetPosition(player.GetPosition());
-            fruit.SetParent(player.GetTransform());
-            fruit.OnRemove().Subscribe(value =>
-            {
-                gameEntity?.HervestFruits(value);
-            }).AddTo(_disposable);
+            var fruitUnit = SpawnFruit(item, gameEntity, player.GetPosition(), player.GetTransform());
+            player.HoldFruit(fruitUnit);
         }).AddTo(_disposable);
 
         gameEntity?.CurrentGameState.Subscribe(async state =>
@@ -67,15 +62,18 @@ public class IngamePresenter : IDisposable
             switch (state)
             {
                 case IngameState.READY:
-                    await ExecuteREADY(gameEntity);
+                    await ExecuteReady(gameEntity, _commonCts);
                     break;
                 case IngameState.BEGIN:
-                    await ExecuteBEGIN(gameEntity);
+                    await ExecuteBegin(gameEntity, _commonCts);
                     break;
                 case IngameState.PROGRESS:
                     break;
+                case IngameState.WAIT_FRUITS:
+                    ExecuteWaitFruits(gameEntity, _commonCts);
+                    break;
                 case IngameState.JUDGE:
-                    await ExecuteJUDGE(gameEntity);
+                    await ExecuteJudge(gameEntity, _commonCts);
                     break;
                 case IngameState.CHANGE_PLAYER:
                     break;
@@ -93,21 +91,15 @@ public class IngamePresenter : IDisposable
             var data = gameEntity.TryMergeFruits();
             if (data.Item1 < 0) return;
 
-            var entity = _fruitFactory.Create(data.Item1 + 1);
-            gameEntity?.GameBoardEntity.InsertFruit(entity);
+            var fruitEntity = _fruitFactory.Create(data.Item1 + 1, FruitState.STANDBY);
+            gameEntity?.GameBoardEntity.InsertFruit(fruitEntity);
 
-            var fruit = _fruitSpawner.Spawn(entity);
-            fruit.SetVisible(true);
-            fruit.SetHold(false);
-            fruit.SetPosition(data.Item2);
-            fruit.OnRemove().Subscribe(value =>
-            {
-                gameEntity?.HervestFruits(value);
-            }).AddTo(_disposable);
+            SpawnFruit(fruitEntity, gameEntity, data.Item2);
         }).AddTo(_disposable);
 
         InputEventProvider.Instance.GetHorizontalObservable.Where(_ =>
             gameEntity?.CurrentGameState.Value == IngameState.PROGRESS ||
+            gameEntity?.CurrentGameState.Value == IngameState.WAIT_FRUITS ||
             gameEntity?.CurrentGameState.Value == IngameState.JUDGE
             ).Subscribe(value =>
             {
@@ -119,11 +111,11 @@ public class IngamePresenter : IDisposable
             ).Subscribe(value =>
             {
                 _playerUnitList[0].ReleaseFruit();
-                gameEntity?.Judge();
+                gameEntity?.ChangeGameState(IngameState.WAIT_FRUITS);
             }).AddTo(_disposable);
     }
 
-    private async UniTask ExecuteREADY(GameEntity entity)
+    private async UniTask ExecuteReady(GameEntity entity, CancellationTokenSource cts)
     {
         await UniTask.Delay(1);
 
@@ -133,7 +125,7 @@ public class IngamePresenter : IDisposable
         );
     }
 
-    private async UniTask ExecuteBEGIN(GameEntity entity)
+    private async UniTask ExecuteBegin(GameEntity entity, CancellationTokenSource cts)
     {
         //TODO 表示待ち
         await UniTask.Delay(500);
@@ -141,14 +133,38 @@ public class IngamePresenter : IDisposable
         entity?.ChangeGameState(IngameState.PROGRESS);
     }
 
-    private async UniTask ExecuteJUDGE(GameEntity entity)
+    private void ExecuteWaitFruits(GameEntity entity, CancellationTokenSource cts)
     {
-        //TODO 判定処理
-        await UniTask.Delay(500);
+        //entity?.ChangeGameState(IngameState.JUDGE);
+    }
 
-        //TODO GameEntityに集約
-        entity?.GameBoardEntity.MoveTurn(_fruitFactory.Create());
-        entity?.ChangeGameState(IngameState.PROGRESS);
+    private async UniTask ExecuteJudge(GameEntity entity, CancellationTokenSource cts)
+    {
+        //await UniTask.Delay(500);
+        entity?.TryMoveTurn(_fruitFactory.Create());
+    }
+
+    private IFruitUnit SpawnFruit(
+        FruitEntity fruitEntity,
+        GameEntity gameEntity,
+        Vector3 position,
+        Transform parent = null
+        )
+    {
+        var fruit = _fruitSpawner.Spawn(fruitEntity);
+        fruit.SetVisible(true);
+        fruit.SetPosition(position);
+        fruit.SetParent(parent);
+        fruit.OnRemove().Subscribe(value =>
+        {
+            gameEntity?.HervestFruits(value);
+        }).AddTo(_disposable);
+        fruit.OnCollide().Subscribe(value =>
+        {
+            gameEntity?.TryJudge();
+        }).AddTo(_disposable);
+
+        return fruit;
     }
 
     public void Initialize()
@@ -158,6 +174,8 @@ public class IngamePresenter : IDisposable
 
     public void Dispose()
     {
+        if (!_commonCts.IsCancellationRequested) _commonCts.Cancel();
+        _commonCts.Dispose();
         _disposable.Dispose();
     }
 }
