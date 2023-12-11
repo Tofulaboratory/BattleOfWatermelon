@@ -17,24 +17,36 @@ public class FruitEntity
 
     public FruitLevelSolver fruitLevelSolver { get; private set; }
 
-    public FruitEntity(int level)
+    public FruitEntity(int level, FruitState fruitState = FruitState.HOLD)
     {
         ID = Guid.NewGuid().ToString();
 
         fruitLevelSolver = new FruitLevelSolver();
         _level.Value = level >= 0 ? level : fruitLevelSolver.Solve();
+        _state.Value = fruitState;
     }
 
-    public bool IsMaxLevel() => _level.Value >= ValueDefines.MAX_FRUIT_LEVEL;
-
-    public void IncrementLevel() => _level.Value++;
-
-    public void SetHold(bool value) => _state.Value = value ? FruitState.HOLD : FruitState.FALL;
+    public void Release() => _state.Value = FruitState.FALL;
 
     public void StandBy() => _state.Value = FruitState.STANDBY;
+
     public void Harvest(Vector2 position)
     {
         Position = position;
         _state.Value = FruitState.HARVEST;
+    }
+
+    public bool IsSafe()
+    {
+        if (_state.Value != FruitState.STANDBY) return true;
+        if (ValueDefines.SAFE_ZONE_MIN_X < Position.x && Position.x < ValueDefines.SAFE_ZONE_MAX_X)
+        {
+            if (ValueDefines.SAFE_ZONE_MIN_Y < Position.y && Position.y < ValueDefines.SAFE_ZONE_MAX_Y)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

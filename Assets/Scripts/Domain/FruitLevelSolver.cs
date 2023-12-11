@@ -11,7 +11,6 @@ public class FruitLevelSolver
 
     internal int Solve()
     {
-        //TODO 初期レベル算出
-        return Random.Range(0,3);
+        return Random.Range(0,ValueDefines.FRUIT_INIT_LEVEL_MAX);
     }
 }

@@ -35,6 +35,16 @@ public class GameBoardEntity
         _inNextFruitEntity.Value = entity;
     }
 
+    public bool IsExistUnsafeFruit()
+    {
+        foreach(var i in _inBoardFruitEntities)
+        {
+            if(!i.IsSafe()) return true;
+        }
+
+        return false;
+    }
+
     public void HervestFruits(string id)
     {
         HervestInBoardFruitIndex(id);

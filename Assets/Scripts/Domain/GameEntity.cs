@@ -38,10 +38,25 @@ public class GameEntity
         _ingameState.Value = state;
     }
 
-
-    public void Judge()
+    public void TryJudge()
     {
-        ChangeGameState(IngameState.JUDGE);
+        if (_ingameState.Value == IngameState.WAIT_FRUITS)
+        {
+            ChangeGameState(IngameState.JUDGE);
+        }
+    }
+
+    public void TryMoveTurn(FruitEntity fruitEntity)
+    {
+        //TODO 判定テスト
+        if (GameBoardEntity.IsExistUnsafeFruit())
+        {
+            ChangeGameState(IngameState.RESULT);
+            return;
+        }
+
+        GameBoardEntity.MoveTurn(fruitEntity);
+        ChangeGameState(IngameState.PROGRESS);
     }
 
     public void HervestFruits(string id)
@@ -49,7 +64,7 @@ public class GameEntity
         GameBoardEntity.HervestFruits(id);
     }
 
-    public (int,Vector2) TryMergeFruits()
+    public (int, Vector2) TryMergeFruits()
     {
         return GameBoardEntity.MergeFruit();
     }

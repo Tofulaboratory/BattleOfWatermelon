@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UniRx;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class PlayerUnit : MonoBehaviour, IPlayerUnit
 {
@@ -18,12 +17,11 @@ public class PlayerUnit : MonoBehaviour, IPlayerUnit
     public void HoldFruit(IFruitUnit fruitUnit)
     {
         _heldFruit.Value = fruitUnit;
-        _heldFruit.Value.SetHold(true);
     }
 
     public void ReleaseFruit()
     {
-        _heldFruit.Value.SetHold(false);
+        _heldFruit.Value.Release();
         _heldFruit.Value = null;
     }
 
