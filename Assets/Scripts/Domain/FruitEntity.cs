@@ -2,6 +2,7 @@ using System;
 using Cysharp.Threading.Tasks;
 using UniRx;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class FruitEntity
 {
@@ -28,7 +29,11 @@ public class FruitEntity
 
     public void Release() => _state.Value = FruitState.FALL;
 
-    public void StandBy() => _state.Value = FruitState.STANDBY;
+    public void StandBy(Vector2 position)
+    {
+        Position = position;
+        _state.Value = FruitState.STANDBY;
+    }
 
     public void Harvest(Vector2 position)
     {

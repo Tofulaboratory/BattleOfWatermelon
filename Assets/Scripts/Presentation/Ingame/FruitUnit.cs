@@ -35,7 +35,7 @@ public class FruitUnit : MonoBehaviour, IFruitUnit
         onCollidion.Subscribe(col =>
         {
             if (entity.State.Value == FruitState.FALL) _onCollide.OnNext(entity.ID);
-            entity.StandBy();
+            entity.StandBy(new Vector2(transform.position.x, transform.position.y));
 
             var collidedFruit = col.gameObject.GetComponent<IFruitUnit>();
             if (collidedFruit == null) return;
