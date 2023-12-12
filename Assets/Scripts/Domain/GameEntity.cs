@@ -48,7 +48,6 @@ public class GameEntity
 
     public void TryMoveTurn(FruitEntity fruitEntity)
     {
-        //TODO 判定テスト
         if (GameBoardEntity.IsExistUnsafeFruit())
         {
             ChangeGameState(IngameState.RESULT);
