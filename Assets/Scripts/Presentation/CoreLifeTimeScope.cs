@@ -9,6 +9,7 @@ public class CoreLifeTimeScope : LifetimeScope
 
     [SerializeField] private TitleView _titleView;
     [SerializeField] private IngameView _ingameView;
+    [SerializeField] private ResultView _resultView;
 
     protected override void Configure(IContainerBuilder builder)
     {
@@ -26,5 +27,6 @@ public class CoreLifeTimeScope : LifetimeScope
 
         builder.RegisterInstance(_titleView).As<ITitleView>();
         builder.RegisterInstance(_ingameView).As<IIngameView>();
+        builder.RegisterInstance(_resultView).As<IResultView>();
     }
 }
