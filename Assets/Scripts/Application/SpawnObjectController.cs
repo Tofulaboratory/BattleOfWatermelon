@@ -14,4 +14,9 @@ public class SpawnObjectController : MonoBehaviour
             Destroy(transform.GetChild(i).gameObject);
         }
     }
+
+    public void Destroy()
+    {
+        Destroy(this.gameObject);
+    }
 }
