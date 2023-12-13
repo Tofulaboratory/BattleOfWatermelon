@@ -1,4 +1,5 @@
 public enum IngameState {
+    INIT,
     READY,
     BEGIN,
     PROGRESS,

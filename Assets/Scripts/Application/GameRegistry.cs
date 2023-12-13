@@ -9,4 +9,5 @@ public class GameRegistry
     private readonly ReactiveProperty<GameEntity> _currentGameEntity = new();
     public IReadOnlyReactiveProperty<GameEntity> CurrentGameEntity => _currentGameEntity;
     public void Save(GameEntity entity) => _currentGameEntity.Value = entity;
+    public void Delete() => _currentGameEntity.Value = null;
 }
