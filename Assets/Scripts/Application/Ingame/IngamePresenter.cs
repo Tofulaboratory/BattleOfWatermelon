@@ -58,6 +58,8 @@ public class IngamePresenter : IDisposable
             var playerUnit = _playerSpawner.Spawn(playerEntity);
             _playerUnitList.Add(playerUnit);
             _spawnObjectController.RegisterObj(playerUnit.GetObj());
+
+            playerEntity.Score.Subscribe(score=>_ingameView.ApplyScoreText(score)).AddTo(_disposable);
         }
 
         gameEntity?.GameBoardEntity.InNextFruitEntity.Where(item => item != null).Subscribe(item =>

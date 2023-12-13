@@ -15,8 +15,6 @@ public class PlayerEntity
     public PlayerEntity()
     {
         _score.Value = 0;
-
-        _score.Subscribe(v=>Debug.Log(v));
     }
 
     public void HoldFruit(FruitEntity fruitEntity)
