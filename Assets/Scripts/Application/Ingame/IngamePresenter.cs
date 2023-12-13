@@ -182,6 +182,7 @@ public class IngamePresenter : IDisposable
         _ingameView.SetActive(false);
         _resultView.SetActive(false);
         _spawnObjectController.ClearRegisteredObj();
+        _spawnObjectController.Destroy();
         _gameRegistry.Delete();
     }
 

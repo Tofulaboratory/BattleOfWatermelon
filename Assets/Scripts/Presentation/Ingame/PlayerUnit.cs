@@ -9,7 +9,8 @@ public class PlayerUnit : MonoBehaviour, IPlayerUnit
 
     public void Initialize(PlayerEntity entity)
     {
-        _heldFruit.Subscribe(value => {
+        _heldFruit.Subscribe(value =>
+        {
 
         }).AddTo(this);
     }
@@ -32,8 +33,16 @@ public class PlayerUnit : MonoBehaviour, IPlayerUnit
 
     public void MovePosition(float direction)
     {
-        //TODO 値定義
-        transform.position += Vector3.right*direction*0.01f;
+        transform.position += Vector3.right * direction * ValueDefines.Player_MOVE_SPEED;
+        if (transform.position.x >= ValueDefines.SAFE_ZONE_MAX_X)
+        {
+            transform.position = new Vector3(ValueDefines.SAFE_ZONE_MAX_X, transform.position.y, transform.position.z);
+        }
+
+        if (transform.position.x <= ValueDefines.SAFE_ZONE_MIN_X)
+        {
+            transform.position = new Vector3(ValueDefines.SAFE_ZONE_MIN_X, transform.position.y, transform.position.z);
+        }
     }
 
     public Transform GetTransform()
