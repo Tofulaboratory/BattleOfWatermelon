@@ -52,6 +52,7 @@ public class FruitUnit : MonoBehaviour, IFruitUnit
 
             entity.Harvest(new Vector2(transform.position.x, transform.position.y));
             Destroy(col.gameObject);
+            _onRemove.OnNext(_fruitEntity.ID);
         }).AddTo(this);
 
         _fruitEntity.State.Subscribe(value =>
@@ -92,17 +93,6 @@ public class FruitUnit : MonoBehaviour, IFruitUnit
     }
 
     public GameObject GetObj() => this.gameObject;
-
-    public void Remove()
-    {
-        if (this.gameObject == null) return;
-        Destroy(this.gameObject);
-    }
-
-    void OnDestroy()
-    {
-        _onRemove.OnNext(_fruitEntity.ID);
-    }
 
     private void ApplySize(int level)
     {

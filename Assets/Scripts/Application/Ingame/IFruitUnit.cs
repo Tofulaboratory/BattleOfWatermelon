@@ -15,5 +15,4 @@ public interface IFruitUnit
     public void SetPosition(Vector3 pos);
     public void SetParent(Transform parent);
     public GameObject GetObj();
-    public void Remove();
 }
