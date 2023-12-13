@@ -40,4 +40,9 @@ public class PlayerUnit : MonoBehaviour, IPlayerUnit
     {
         return transform;
     }
+
+    public GameObject GetObj()
+    {
+        return gameObject;
+    }
 }

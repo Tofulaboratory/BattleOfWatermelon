@@ -10,4 +10,5 @@ public interface IPlayerUnit
     public void MovePosition(float direction);
     public Transform GetTransform();
     public void ReleaseFruit();
+    public GameObject GetObj();
 }

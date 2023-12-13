@@ -53,7 +53,12 @@ public class IngamePresenter : IDisposable
 
         //TODO 複数人対応
         var playerEntity = gameEntity?.GameBoardEntity.PlayerEntity;
-        if (playerEntity != null) _playerUnitList.Add(_playerSpawner.Spawn(playerEntity));
+        if (playerEntity != null)
+        {
+            var playerUnit = _playerSpawner.Spawn(playerEntity);
+            _playerUnitList.Add(playerUnit);
+            _spawnObjectController.RegisterObj(playerUnit.GetObj());
+        }
 
         gameEntity?.GameBoardEntity.InNextFruitEntity.Where(item => item != null).Subscribe(item =>
         {
