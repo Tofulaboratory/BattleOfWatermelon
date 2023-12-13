@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -94,6 +95,7 @@ public class GameBoardEntity
                     var position = Vector3.Lerp(_hervestFruitEntities[i].Position,_hervestFruitEntities[j].Position,0.5f);
                     _hervestFruitEntities.RemoveAt(j);
                     _hervestFruitEntities.RemoveAt(i);
+                    PlayerEntity.AddScore((int)Math.Pow(2,level));
                     return (level, position);
                 }
             }
