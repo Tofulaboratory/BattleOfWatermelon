@@ -22,6 +22,7 @@ public class GameUsecase : IDisposable
     private readonly FruitFactory _fruitFactory;
     private readonly FruitSpawner _fruitSpawner;
     private readonly PlayerSpawner _playerSpawner;
+    private readonly SpawnObjectControllerSpawner _spawnObjectControllerSpawner;
 
     private TitlePresenter titlePresenter;
     private IngamePresenter ingamePresenter;
@@ -45,6 +46,7 @@ public class GameUsecase : IDisposable
 
         _fruitSpawner = new FruitSpawner();
         _playerSpawner = new PlayerSpawner();
+        _spawnObjectControllerSpawner = new SpawnObjectControllerSpawner();
 
         _outgameState.Subscribe(state =>
         {
@@ -96,6 +98,7 @@ public class GameUsecase : IDisposable
             _fruitFactory,
             _fruitSpawner,
             _playerSpawner,
+            _spawnObjectControllerSpawner,
             _gameRegistry,
             () => ChangeOutgameState(OutgameState.TITLE)
         );
