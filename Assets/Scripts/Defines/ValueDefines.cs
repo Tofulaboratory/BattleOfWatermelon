@@ -11,5 +11,5 @@ public static class ValueDefines
     public static readonly float FRUIT_SIZE_BASE = 0.1f;
     public static readonly float FRUIT_SIZE_RATE = 0.08f;
 
-    public static readonly float Player_MOVE_SPEED = 0.01f;
+    public static readonly float Player_MOVE_SPEED = 0.06f;
 }
