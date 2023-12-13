@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using JetBrains.Annotations;
 using UniRx;
 using UniRx.Triggers;
 using Unity.VisualScripting;
@@ -24,9 +23,14 @@ public class FruitUnit : MonoBehaviour, IFruitUnit
     public int GetFruitLevel() => _fruitEntity.Level.Value;
     public string GetFruitID() => _fruitEntity.ID;
 
+    //TODO 修正する
+    private Action _onFall = null;
+    public void RegisterOnFall(Action onFall) => _onFall = onFall;
+
     public void Initialize(FruitEntity entity)
     {
         _fruitEntity = entity;
+
         spriteRenderer.sprite = fruitSpriteData.Get(entity.Level.Value);
         ApplySize(GetFruitLevel());
 
@@ -59,7 +63,7 @@ public class FruitUnit : MonoBehaviour, IFruitUnit
                 case FruitState.HOLD:
                     break;
                 case FruitState.FALL:
-                    SetParent(null);
+                    _onFall.Invoke();
                     break;
                 default:
                     break;
@@ -86,6 +90,8 @@ public class FruitUnit : MonoBehaviour, IFruitUnit
     {
         transform.parent = parent;
     }
+
+    public GameObject GetObj() => this.gameObject;
 
     public void Remove()
     {

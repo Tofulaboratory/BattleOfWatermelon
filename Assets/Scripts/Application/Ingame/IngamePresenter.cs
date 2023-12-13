@@ -17,10 +17,11 @@ public class IngamePresenter : IDisposable
     private readonly FruitFactory _fruitFactory;
     private readonly FruitSpawner _fruitSpawner;
     private readonly PlayerSpawner _playerSpawner;
+    private readonly SpawnObjectControllerSpawner _spawnObjectControllerSpawner;
     private readonly GameRegistry _gameRegistry;
 
     private readonly List<IPlayerUnit> _playerUnitList = new();
-    private readonly List<IFruitUnit> _fruitUnitList = new();
+    private SpawnObjectController _spawnObjectController;
 
     public IngamePresenter(
         IIngameView ingameView,
@@ -28,6 +29,7 @@ public class IngamePresenter : IDisposable
         FruitFactory fruitFactory,
         FruitSpawner fruitSpawner,
         PlayerSpawner playerSpawner,
+        SpawnObjectControllerSpawner spawnObjectControllerSpawner,
         GameRegistry gameRegistry,
         Action onTransitionTitle
         )
@@ -36,8 +38,11 @@ public class IngamePresenter : IDisposable
         _resultView = resultView;
         _fruitSpawner = fruitSpawner;
         _playerSpawner = playerSpawner;
+        _spawnObjectControllerSpawner = spawnObjectControllerSpawner;
         _gameRegistry = gameRegistry;
         _fruitFactory = fruitFactory;
+
+        _spawnObjectController = _spawnObjectControllerSpawner.Spawn();
 
         Bind(onTransitionTitle);
     }
@@ -170,12 +175,7 @@ public class IngamePresenter : IDisposable
     {
         _ingameView.SetActive(false);
         _resultView.SetActive(false);
-        for (var i = _fruitUnitList.Count - 1; i >= 0; i--)
-        {
-            if (_fruitUnitList[i].IsUnityNull()) continue;
-            _fruitUnitList[i].Remove();
-        }
-        _fruitUnitList.Clear();
+        _spawnObjectController.ClearRegisteredObj();
         _gameRegistry.Delete();
     }
 
@@ -187,29 +187,26 @@ public class IngamePresenter : IDisposable
         )
     {
         var fruit = _fruitSpawner.Spawn(fruitEntity);
+        fruit.RegisterOnFall(() => _spawnObjectController.RegisterObj(fruit.GetObj()));
         fruit.SetVisible(true);
         fruit.SetPosition(position);
-        fruit.SetParent(parent);
         fruit.OnRemove().Subscribe(value =>
         {
             gameEntity?.HervestFruits(value);
-
-            //TODO 処理の見直し
-            for (var i = _fruitUnitList.Count - 1; i >= 0; i--)
-            {
-                var entity = _fruitUnitList[i];
-                if (entity.GetFruitID() == value)
-                {
-                    entity.Remove();
-                    break;
-                }
-            }
         }).AddTo(_disposable);
         fruit.OnCollide().Subscribe(value =>
         {
             gameEntity?.TryJudge();
         }).AddTo(_disposable);
-        _fruitUnitList.Add(fruit);
+
+        if (parent == null)
+        {
+            _spawnObjectController.RegisterObj(fruit.GetObj());
+        }
+        else
+        {
+            fruit.SetParent(parent);
+        }
 
         return fruit;
     }
