@@ -28,6 +28,7 @@ public class FruitUnit : MonoBehaviour, IFruitUnit
     {
         _fruitEntity = entity;
         spriteRenderer.sprite = fruitSpriteData.Get(entity.Level.Value);
+        ApplySize(GetFruitLevel());
 
         //当たり判定の生成のため
         this.AddComponent<PolygonCollider2D>();
@@ -95,5 +96,10 @@ public class FruitUnit : MonoBehaviour, IFruitUnit
     void OnDestroy()
     {
         _onRemove.OnNext(_fruitEntity.ID);
+    }
+
+    private void ApplySize(int level)
+    {
+        this.transform.localScale = Vector3.one * (ValueDefines.FRUIT_SIZE_BASE + ValueDefines.FRUIT_SIZE_RATE * level);
     }
 }
