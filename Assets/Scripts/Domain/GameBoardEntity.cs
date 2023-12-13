@@ -91,7 +91,7 @@ public class GameBoardEntity
                 if (_hervestFruitEntities[i].Level.Value == _hervestFruitEntities[j].Level.Value)
                 {
                     var level = _hervestFruitEntities[i].Level.Value;
-                    var position = (_hervestFruitEntities[i].Position - _hervestFruitEntities[j].Position);
+                    var position = Vector3.Lerp(_hervestFruitEntities[i].Position,_hervestFruitEntities[j].Position,0.5f);
                     _hervestFruitEntities.RemoveAt(j);
                     _hervestFruitEntities.RemoveAt(i);
                     return (level, position);
