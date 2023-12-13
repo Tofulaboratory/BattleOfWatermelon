@@ -23,7 +23,7 @@ public class GameEntity
         this.IngameStateSolver = new IngameStateSolver(this);
     }
 
-    public void Initialize(FruitEntity hold, FruitEntity next)
+    public void GameReady(FruitEntity hold, FruitEntity next)
     {
         this.GameBoardEntity.Initialize(
             hold,
@@ -66,6 +66,11 @@ public class GameEntity
     public (int, Vector2) TryMergeFruits()
     {
         return GameBoardEntity.MergeFruit();
+    }
+
+    public void EndGame()
+    {
+        //TODO
     }
 
     // public void SolveGameState()

@@ -22,6 +22,7 @@ public class FruitUnit : MonoBehaviour, IFruitUnit
 
     private FruitEntity _fruitEntity;
     public int GetFruitLevel() => _fruitEntity.Level.Value;
+    public string GetFruitID() => _fruitEntity.ID;
 
     public void Initialize(FruitEntity entity)
     {
@@ -35,14 +36,16 @@ public class FruitUnit : MonoBehaviour, IFruitUnit
         onCollidion.Subscribe(col =>
         {
             if (entity.State.Value == FruitState.FALL) _onCollide.OnNext(entity.ID);
-            entity.StandBy(new Vector2(transform.position.x, transform.position.y));
 
             var collidedFruit = col.gameObject.GetComponent<IFruitUnit>();
-            if (collidedFruit == null) return;
-            if (collidedFruit.GetFruitLevel() != GetFruitLevel()) return;
-            _onRemove.OnNext(entity.ID);
-            entity.Harvest(new Vector2(transform.position.x, transform.position.y));
+            var isStandby = collidedFruit == null || collidedFruit.GetFruitLevel() != GetFruitLevel();
+            if (isStandby)
+            {
+                entity.StandBy(new Vector2(transform.position.x, transform.position.y));
+                return;
+            }
 
+            entity.Harvest(new Vector2(transform.position.x, transform.position.y));
             Destroy(col.gameObject);
         }).AddTo(this);
 
@@ -81,5 +84,16 @@ public class FruitUnit : MonoBehaviour, IFruitUnit
     public void SetParent(Transform parent)
     {
         transform.parent = parent;
+    }
+
+    public void Remove()
+    {
+        if (this.gameObject == null) return;
+        Destroy(this.gameObject);
+    }
+
+    void OnDestroy()
+    {
+        _onRemove.OnNext(_fruitEntity.ID);
     }
 }

@@ -14,6 +14,7 @@ public class GameUsecase : IDisposable
 
     private readonly ITitleView _titleView;
     private readonly IIngameView _ingameView;
+    private readonly IResultView _resultView;
 
     private readonly GameRegistry _gameRegistry;
 
@@ -29,6 +30,7 @@ public class GameUsecase : IDisposable
     public GameUsecase(
         ITitleView titleView,
         IIngameView ingameView,
+        IResultView resultView,
         GameRegistry gameRegistry,
         GameFactory gameFactory,
         FruitFactory fruitFactory
@@ -36,6 +38,7 @@ public class GameUsecase : IDisposable
     {
         _titleView = titleView;
         _ingameView = ingameView;
+        _resultView = resultView;
         _gameRegistry = gameRegistry;
         _gameFactory = gameFactory;
         _fruitFactory = fruitFactory;
@@ -49,18 +52,16 @@ public class GameUsecase : IDisposable
             switch (state)
             {
                 case OutgameState.TITLE:
-                    ExecuteTitle();
+                    InitializeTitle();
                     break;
 
                 case OutgameState.MATCHING:
+                    //TODO 複数人プレイ対応
                     ChangeOutgameState(OutgameState.INGAME);
                     break;
 
                 case OutgameState.INGAME:
-                    ExecuteIngame();
-                    break;
-
-                case OutgameState.RESULT:
+                    InitializeIngame();
                     break;
 
                 default:
@@ -69,9 +70,15 @@ public class GameUsecase : IDisposable
         }).AddTo(_disposable);
     }
 
-    private void ExecuteTitle()
+    ~GameUsecase()
     {
-        titlePresenter ??= new TitlePresenter(
+        Dispose();
+    }
+
+    private void InitializeTitle()
+    {
+        titlePresenter?.Dispose();
+        titlePresenter = new TitlePresenter(
             _titleView,
             _gameFactory,
             _gameRegistry,
@@ -80,16 +87,19 @@ public class GameUsecase : IDisposable
         titlePresenter.Initialize();
     }
 
-    private void ExecuteIngame()
+    private void InitializeIngame()
     {
-        ingamePresenter ??= new IngamePresenter(
+        ingamePresenter?.Dispose();
+        ingamePresenter = new IngamePresenter(
             _ingameView,
+            _resultView,
             _fruitFactory,
             _fruitSpawner,
             _playerSpawner,
-            _gameRegistry
+            _gameRegistry,
+            () => ChangeOutgameState(OutgameState.TITLE)
         );
-        ingamePresenter?.Initialize();
+        ingamePresenter.Initialize();
     }
 
     public void Dispose()
@@ -97,5 +107,7 @@ public class GameUsecase : IDisposable
         titlePresenter.Dispose();
         ingamePresenter.Dispose();
         _disposable.Dispose();
+
+        GC.SuppressFinalize(this);
     }
 }

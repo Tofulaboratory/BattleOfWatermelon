@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UniRx;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class IngamePresenter : IDisposable
@@ -11,31 +13,36 @@ public class IngamePresenter : IDisposable
     private CancellationTokenSource _commonCts = new();
 
     private readonly IIngameView _ingameView;
+    private readonly IResultView _resultView;
     private readonly FruitFactory _fruitFactory;
     private readonly FruitSpawner _fruitSpawner;
     private readonly PlayerSpawner _playerSpawner;
     private readonly GameRegistry _gameRegistry;
 
     private readonly List<IPlayerUnit> _playerUnitList = new();
+    private readonly List<IFruitUnit> _fruitUnitList = new();
 
     public IngamePresenter(
         IIngameView ingameView,
+        IResultView resultView,
         FruitFactory fruitFactory,
         FruitSpawner fruitSpawner,
         PlayerSpawner playerSpawner,
-        GameRegistry gameRegistry
+        GameRegistry gameRegistry,
+        Action onTransitionTitle
         )
     {
         _ingameView = ingameView;
+        _resultView = resultView;
         _fruitSpawner = fruitSpawner;
         _playerSpawner = playerSpawner;
         _gameRegistry = gameRegistry;
         _fruitFactory = fruitFactory;
 
-        Bind();
+        Bind(onTransitionTitle);
     }
 
-    private void Bind()
+    private void Bind(Action onTransitionTitle)
     {
         var gameEntity = _gameRegistry.CurrentGameEntity?.Value;
 
@@ -61,6 +68,8 @@ public class IngamePresenter : IDisposable
             Debug.Log(state);
             switch (state)
             {
+                case IngameState.INIT:
+                    break;
                 case IngameState.READY:
                     await ExecuteReady(gameEntity, _commonCts);
                     break;
@@ -78,8 +87,11 @@ public class IngamePresenter : IDisposable
                 case IngameState.CHANGE_PLAYER:
                     break;
                 case IngameState.RESULT:
+                    await ExecuteResult(gameEntity, _commonCts);
                     break;
                 case IngameState.END:
+                    await ExecuteEnd(gameEntity, _commonCts);
+                    onTransitionTitle.Invoke();
                     break;
                 default:
                     break;
@@ -95,6 +107,11 @@ public class IngamePresenter : IDisposable
             gameEntity?.GameBoardEntity.InsertFruit(fruitEntity);
 
             SpawnFruit(fruitEntity, gameEntity, data.Item2);
+        }).AddTo(_disposable);
+
+        _resultView.OnClickTitleButton().Subscribe(_ =>
+        {
+            gameEntity?.ChangeGameState(IngameState.END);
         }).AddTo(_disposable);
 
         InputEventProvider.Instance.GetHorizontalObservable.Where(_ =>
@@ -119,7 +136,7 @@ public class IngamePresenter : IDisposable
     {
         await UniTask.Delay(1);
 
-        entity?.Initialize(
+        entity?.GameReady(
             _fruitFactory.Create(),
             _fruitFactory.Create()
         );
@@ -144,6 +161,24 @@ public class IngamePresenter : IDisposable
         entity?.TryMoveTurn(_fruitFactory.Create());
     }
 
+    private async UniTask ExecuteResult(GameEntity entity, CancellationTokenSource cts)
+    {
+        _resultView.SetActive(true);
+    }
+
+    private async UniTask ExecuteEnd(GameEntity entity, CancellationTokenSource cts)
+    {
+        _ingameView.SetActive(false);
+        _resultView.SetActive(false);
+        for (var i = _fruitUnitList.Count - 1; i >= 0; i--)
+        {
+            if (_fruitUnitList[i].IsUnityNull()) continue;
+            _fruitUnitList[i].Remove();
+        }
+        _fruitUnitList.Clear();
+        _gameRegistry.Delete();
+    }
+
     private IFruitUnit SpawnFruit(
         FruitEntity fruitEntity,
         GameEntity gameEntity,
@@ -158,11 +193,23 @@ public class IngamePresenter : IDisposable
         fruit.OnRemove().Subscribe(value =>
         {
             gameEntity?.HervestFruits(value);
+
+            //TODO 処理の見直し
+            for (var i = _fruitUnitList.Count - 1; i >= 0; i--)
+            {
+                var entity = _fruitUnitList[i];
+                if (entity.GetFruitID() == value)
+                {
+                    entity.Remove();
+                    break;
+                }
+            }
         }).AddTo(_disposable);
         fruit.OnCollide().Subscribe(value =>
         {
             gameEntity?.TryJudge();
         }).AddTo(_disposable);
+        _fruitUnitList.Add(fruit);
 
         return fruit;
     }
@@ -170,6 +217,8 @@ public class IngamePresenter : IDisposable
     public void Initialize()
     {
         _ingameView.SetActive(true);
+        _resultView.SetActive(false);
+        _gameRegistry.CurrentGameEntity?.Value?.ChangeGameState(IngameState.READY);
     }
 
     public void Dispose()
