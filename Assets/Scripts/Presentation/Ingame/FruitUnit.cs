@@ -61,8 +61,6 @@ public class FruitUnit : MonoBehaviour, IFruitUnit
 
             switch (value)
             {
-                case FruitState.HOLD:
-                    break;
                 case FruitState.FALL:
                     _onFall.Invoke();
                     break;

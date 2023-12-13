@@ -8,13 +8,17 @@ public class PlayerEntity
     private readonly ReactiveProperty<FruitEntity> _heldFruit = new();
     public IReadOnlyReactiveProperty<FruitEntity> HeldFruit => _heldFruit;
 
+    private readonly ReactiveProperty<int> _score = new();
+    public IReadOnlyReactiveProperty<int> Score => _score;
+    public void AddScore(int value) => _score.Value += value;
+
     public PlayerEntity()
     {
-
+        _score.Value = 0;
     }
 
-    public void HoldFruit(FruitEntity entity)
+    public void HoldFruit(FruitEntity fruitEntity)
     {
-        _heldFruit.Value = entity;
+        _heldFruit.Value = fruitEntity;
     }
 }
