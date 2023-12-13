@@ -75,7 +75,6 @@ public class IngamePresenter : IDisposable
 
         gameEntity?.CurrentGameState.Subscribe(async state =>
         {
-            Debug.Log(state);
             switch (state)
             {
                 case IngameState.INIT:
