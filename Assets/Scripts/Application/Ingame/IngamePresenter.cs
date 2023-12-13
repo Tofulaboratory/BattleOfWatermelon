@@ -74,7 +74,7 @@ public class IngamePresenter : IDisposable
                     await ExecuteReady(gameEntity, _commonCts);
                     break;
                 case IngameState.BEGIN:
-                    await ExecuteBegin(gameEntity, _commonCts);
+                    await ExecuteBeginAsync(gameEntity, _commonCts);
                     break;
                 case IngameState.PROGRESS:
                     break;
@@ -82,15 +82,15 @@ public class IngamePresenter : IDisposable
                     ExecuteWaitFruits(gameEntity, _commonCts);
                     break;
                 case IngameState.JUDGE:
-                    await ExecuteJudge(gameEntity, _commonCts);
+                    await ExecuteJudgeAsync(gameEntity, _commonCts);
                     break;
                 case IngameState.CHANGE_PLAYER:
                     break;
                 case IngameState.RESULT:
-                    await ExecuteResult(gameEntity, _commonCts);
+                    await ExecuteResultAsync(gameEntity, _commonCts);
                     break;
                 case IngameState.END:
-                    await ExecuteEnd(gameEntity, _commonCts);
+                    await ExecuteEndAsync(gameEntity, _commonCts);
                     onTransitionTitle.Invoke();
                     break;
                 default:
@@ -142,7 +142,7 @@ public class IngamePresenter : IDisposable
         );
     }
 
-    private async UniTask ExecuteBegin(GameEntity entity, CancellationTokenSource cts)
+    private async UniTask ExecuteBeginAsync(GameEntity entity, CancellationTokenSource cts)
     {
         //TODO 表示待ち
         await UniTask.Delay(500);
@@ -155,18 +155,18 @@ public class IngamePresenter : IDisposable
         //entity?.ChangeGameState(IngameState.JUDGE);
     }
 
-    private async UniTask ExecuteJudge(GameEntity entity, CancellationTokenSource cts)
+    private async UniTask ExecuteJudgeAsync(GameEntity entity, CancellationTokenSource cts)
     {
         //await UniTask.Delay(500);
         entity?.TryMoveTurn(_fruitFactory.Create());
     }
 
-    private async UniTask ExecuteResult(GameEntity entity, CancellationTokenSource cts)
+    private async UniTask ExecuteResultAsync(GameEntity entity, CancellationTokenSource cts)
     {
         _resultView.SetActive(true);
     }
 
-    private async UniTask ExecuteEnd(GameEntity entity, CancellationTokenSource cts)
+    private async UniTask ExecuteEndAsync(GameEntity entity, CancellationTokenSource cts)
     {
         _ingameView.SetActive(false);
         _resultView.SetActive(false);
