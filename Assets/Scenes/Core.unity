@@ -1768,6 +1768,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvasGroup: {fileID: 996221189}
   startButton: {fileID: 321616136}
+  multiStartButton: {fileID: 696471250}
 --- !u!114 &996221185
 MonoBehaviour:
   m_ObjectHideFlags: 0
