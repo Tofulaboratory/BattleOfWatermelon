@@ -22,6 +22,14 @@ public class TitlePresenter : IDisposable
             onTransitionGame.Invoke();
             _titleView.SetActive(false);
         }).AddTo(_disposable);
+
+         _titleView.OnClickMultiStartButton().Subscribe(_=>{
+            var entity = gameFactory.Create(IngameType.MULTI);
+            gameRegistry.Save(entity);
+
+            onTransitionGame.Invoke();
+            _titleView.SetActive(false);
+        }).AddTo(_disposable);
     }
 
     public void Initialize()

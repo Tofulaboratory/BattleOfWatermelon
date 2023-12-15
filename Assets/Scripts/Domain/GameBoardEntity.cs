@@ -16,23 +16,23 @@ public class GameBoardEntity
     private readonly ReactiveProperty<FruitEntity> _inNextFruitEntity = new();
     public IReadOnlyReactiveProperty<FruitEntity> InNextFruitEntity => _inNextFruitEntity;
 
-    public PlayerEntity PlayerEntity { get; private set; }
+    public PlayerEntity[] PlayerEntities { get; private set; }
 
-    public GameBoardEntity(PlayerEntity playerEntity)
+    public GameBoardEntity(PlayerEntity[] playerEntities)
     {
-        this.PlayerEntity = playerEntity;
+        this.PlayerEntities = playerEntities;
     }
 
     public void Initialize(FruitEntity inHoldFruit, FruitEntity inNextFruit)
     {
-        this.PlayerEntity.HoldFruit(inHoldFruit);
+        this.PlayerEntities[0].HoldFruit(inHoldFruit);
         _inNextFruitEntity.Value = inNextFruit;
     }
 
     public void MoveTurn(FruitEntity entity)
     {
-        _inBoardFruitEntities.Add(this.PlayerEntity.HeldFruit.Value);
-        this.PlayerEntity.HoldFruit(_inNextFruitEntity.Value);
+        _inBoardFruitEntities.Add(this.PlayerEntities[0].HeldFruit.Value);
+        this.PlayerEntities[0].HoldFruit(_inNextFruitEntity.Value);
         _inNextFruitEntity.Value = entity;
     }
 
@@ -95,7 +95,7 @@ public class GameBoardEntity
                     var position = Vector3.Lerp(_hervestFruitEntities[i].Position,_hervestFruitEntities[j].Position,0.5f);
                     _hervestFruitEntities.RemoveAt(j);
                     _hervestFruitEntities.RemoveAt(i);
-                    PlayerEntity.AddScore((int)Math.Pow(2,level));
+                    this.PlayerEntities[0].AddScore((int)Math.Pow(2,level));
                     return (level, position);
                 }
             }

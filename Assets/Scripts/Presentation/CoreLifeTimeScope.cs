@@ -8,6 +8,7 @@ public class CoreLifeTimeScope : LifetimeScope
 {
 
     [SerializeField] private TitleView _titleView;
+    [SerializeField] private MatchingView _matchingView;
     [SerializeField] private IngameView _ingameView;
     [SerializeField] private ResultView _resultView;
 
@@ -26,6 +27,7 @@ public class CoreLifeTimeScope : LifetimeScope
         builder.Register<PlayerSpawner>(Lifetime.Scoped);
 
         builder.RegisterInstance(_titleView).As<ITitleView>();
+        builder.RegisterInstance(_matchingView).As<IMatchingView>();
         builder.RegisterInstance(_ingameView).As<IIngameView>();
         builder.RegisterInstance(_resultView).As<IResultView>();
     }

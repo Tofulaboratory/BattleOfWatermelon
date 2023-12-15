@@ -52,7 +52,7 @@ public class IngamePresenter : IDisposable
         var gameEntity = _gameRegistry.CurrentGameEntity?.Value;
 
         //TODO 複数人対応
-        var playerEntity = gameEntity?.GameBoardEntity.PlayerEntity;
+        var playerEntity = gameEntity?.GameBoardEntity.PlayerEntities[0];
         if (playerEntity != null)
         {
             var playerUnit = _playerSpawner.Spawn(playerEntity);
@@ -67,7 +67,7 @@ public class IngamePresenter : IDisposable
             _ingameView.ApplyNextFrame(item);
         }).AddTo(_disposable);
 
-        gameEntity?.GameBoardEntity.PlayerEntity.HeldFruit.Where(item => item != null).Subscribe(item =>
+        gameEntity?.GameBoardEntity.PlayerEntities[0].HeldFruit.Where(item => item != null).Subscribe(item =>
         {
             //TODO 複数人対応
             var player = _playerUnitList[0];
