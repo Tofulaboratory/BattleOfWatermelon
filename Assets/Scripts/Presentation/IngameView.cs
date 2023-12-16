@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class IngameView : ViewBase, IIngameView
 {
+    [SerializeField] private TMP_Text turnIndicaterText;
     [SerializeField] private FruitSpriteData fruitSpriteData;
 
     [SerializeField] private Image nextFrameImage;
@@ -27,6 +28,11 @@ public class IngameView : ViewBase, IIngameView
     public void ApplyScoreText(int score)
     {
         scoreText.text = $"{score}";
+    }
+
+    public void ApplyTurnIndicator(string name)
+    {
+        turnIndicaterText.text = $"{name}のターン";
     }
 
     public void SetActive(bool isActivate)

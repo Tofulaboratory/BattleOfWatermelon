@@ -20,7 +20,7 @@ public class IngamePresenter : IDisposable
     private readonly SpawnObjectControllerSpawner _spawnObjectControllerSpawner;
     private readonly GameRegistry _gameRegistry;
 
-    private readonly Dictionary<string,IPlayerUnit> _playerUnitDic = new();
+    private readonly Dictionary<string, IPlayerUnit> _playerUnitDic = new();
     private SpawnObjectController _spawnObjectController;
 
     public IngamePresenter(
@@ -57,7 +57,7 @@ public class IngamePresenter : IDisposable
             var playerEntity = gameBoardEntity.PlayerEntities[i];
             var playerUnit = _playerSpawner.Spawn(playerEntity);
 
-            _playerUnitDic.Add(playerEntity.ID,playerUnit);
+            _playerUnitDic.Add(playerEntity.ID, playerUnit);
             _spawnObjectController.RegisterObj(playerUnit.GetObj());
 
             playerEntity.Score.Subscribe(score => _ingameView.ApplyScoreText(score)).AddTo(_disposable);
@@ -67,6 +67,11 @@ public class IngamePresenter : IDisposable
                 var player = _playerUnitDic[playerEntity.ID];
                 var fruitUnit = SpawnFruit(item, gameEntity, player.GetPosition(), player.GetTransform());
                 player.HoldFruit(fruitUnit);
+            }).AddTo(_disposable);
+
+            playerEntity.IsMyTurn.Where(item => item == true).Subscribe(_=>
+            {
+                _ingameView.ApplyTurnIndicator(playerEntity.Name);
             }).AddTo(_disposable);
         }
 

@@ -17,9 +17,10 @@ public class GameBoardEntity
     public IReadOnlyReactiveProperty<FruitEntity> InNextFruitEntity => _inNextFruitEntity;
 
     public PlayerEntity[] PlayerEntities { get; private set; }
-    private int _turn = 0;
-    private void ProgressTurn() => _turn++;
-    private int GetTurnIndex() => _turn % PlayerEntities.Length;
+    private readonly ReactiveProperty<int> _turn = new();
+    public IReadOnlyReactiveProperty<int> Turn => _turn;
+    private void ProgressTurn() => _turn.Value++;
+    private int GetTurnIndex() => _turn.Value % PlayerEntities.Length;
     public string GetCurrentTurnPlayerID() => PlayerEntities[GetTurnIndex()].ID;
 
     public GameBoardEntity(PlayerEntity[] playerEntities)
@@ -38,7 +39,13 @@ public class GameBoardEntity
         _inBoardFruitEntities.Add(this.PlayerEntities[GetTurnIndex()].HeldFruit.Value);
         ProgressTurn();
 
-        this.PlayerEntities[GetTurnIndex()].HoldFruit(_inNextFruitEntity.Value);
+        var playerEntity = this.PlayerEntities[GetTurnIndex()];
+        playerEntity.HoldFruit(_inNextFruitEntity.Value);
+        for(int i = 0;i<this.PlayerEntities.Length;i++)
+        {
+            playerEntity.SetTurn(false);    
+        }
+        playerEntity.SetTurn(true);
         _inNextFruitEntity.Value = entity;
     }
 

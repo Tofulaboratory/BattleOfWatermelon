@@ -10,20 +10,20 @@ public class PlayerFactory
 
     }
 
-    internal PlayerEntity CreateEntity() => new();
+    internal PlayerEntity CreateEntity(string name) => new(name);
 
     public PlayerEntity[] CreateSingle()
     {
         var ret = new PlayerEntity[1];
-        ret[0] = CreateEntity();
+        ret[0] = CreateEntity("たかし");
         return ret;
     }
 
     public PlayerEntity[] CreateMulti()
     {
         var ret = new PlayerEntity[2];
-        ret[0] = CreateEntity();
-        ret[1] = CreateEntity();
+        ret[0] = CreateEntity("たかし1");
+        ret[1] = CreateEntity("たかし2");
         return ret;
     }
 }

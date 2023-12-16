@@ -8,6 +8,8 @@ public class PlayerEntity
 {
     public string ID { get; private set; }
 
+    public string Name {get; private set;}
+
     private readonly ReactiveProperty<FruitEntity> _heldFruit = new();
     public IReadOnlyReactiveProperty<FruitEntity> HeldFruit => _heldFruit;
 
@@ -18,11 +20,17 @@ public class PlayerEntity
     public IReadOnlyReactiveProperty<int> Score => _score;
     public void AddScore(int value) => _score.Value += value;
 
-    public PlayerEntity()
+    public PlayerEntity(string name)
     {
         ID = Guid.NewGuid().ToString();
+        Name = name;
 
         _score.Value = 0;
+    }
+
+    public void SetTurn(bool isMyturn)
+    {
+        _isMyTurn.Value = isMyturn;
     }
 
     public void HoldFruit(FruitEntity fruitEntity)

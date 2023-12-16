@@ -157,7 +157,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -623, y: 397}
+  m_AnchoredPosition: {x: -623, y: 350}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &69823202
@@ -279,6 +279,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canvasGroup: {fileID: 69823208}
+  turnIndicaterText: {fileID: 694810382}
   fruitSpriteData: {fileID: 11400000, guid: 4297493ec0fba904cb8c1174347de0c7, type: 2}
   nextFrameImage: {fileID: 1873769580}
   scoreText: {fileID: 878201931}
@@ -1137,7 +1138,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &694810381
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1154,7 +1155,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 543, y: 428.9}
+  m_AnchoredPosition: {x: -622, y: 409}
   m_SizeDelta: {x: 600, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &694810382
@@ -1177,7 +1178,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u3042\u306A\u305F\u306E\u30BF\u30FC\u30F3"
+  m_text: "\u305F\u304B\u30571\u306E\u30BF\u30FC\u30F3"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 38cc4c514e96f3c46bb5b221551f2e76, type: 2}
   m_sharedMaterial: {fileID: 7091676066979834847, guid: 38cc4c514e96f3c46bb5b221551f2e76, type: 2}
@@ -3480,7 +3481,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 546, y: 273}
+  m_AnchoredPosition: {x: 546, y: 320}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1735827621
