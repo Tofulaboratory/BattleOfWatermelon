@@ -15,15 +15,15 @@ public class PlayerFactory
     public PlayerEntity[] CreateSingle()
     {
         var ret = new PlayerEntity[1];
-        ret[0] = CreateEntity("たかし");
+        ret[0] = CreateEntity("ただし");
         return ret;
     }
 
     public PlayerEntity[] CreateMulti()
     {
         var ret = new PlayerEntity[2];
-        ret[0] = CreateEntity("たかし1");
-        ret[1] = CreateEntity("たかし2");
+        ret[0] = CreateEntity("ただし1");
+        ret[1] = CreateEntity("ただし2");
         return ret;
     }
 }
