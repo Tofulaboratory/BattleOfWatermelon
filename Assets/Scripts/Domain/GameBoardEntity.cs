@@ -31,6 +31,7 @@ public class GameBoardEntity
     public void Initialize(FruitEntity inHoldFruit, FruitEntity inNextFruit)
     {
         this.PlayerEntities[GetTurnIndex()].HoldFruit(inHoldFruit);
+        this.PlayerEntities[GetTurnIndex()].SetTurn(true);
         _inNextFruitEntity.Value = inNextFruit;
     }
 

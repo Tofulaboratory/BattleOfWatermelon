@@ -11,7 +11,7 @@ public class IngameView : ViewBase, IIngameView
 
     [SerializeField] private Image nextFrameImage;
 
-    [SerializeField] private TMP_Text scoreText;
+    [SerializeField] private TMP_Text[] scoreText;
 
     private RectTransform rectTransform;
 
@@ -25,9 +25,9 @@ public class IngameView : ViewBase, IIngameView
         nextFrameImage.sprite = fruitSpriteData.Get(entity.Level.Value);
     }
 
-    public void ApplyScoreText(int score)
+    public void ApplyScoreText(int index,int score)
     {
-        scoreText.text = $"{score}";
+        scoreText[index].text = $"{score}";
     }
 
     public void ApplyTurnIndicator(string name)
