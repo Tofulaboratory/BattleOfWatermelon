@@ -287,6 +287,7 @@ MonoBehaviour:
   scoreText:
   - {fileID: 878201931}
   - {fileID: 1305111169}
+  score2Obj: {fileID: 2079630698}
 --- !u!225 &69823208
 CanvasGroup:
   m_ObjectHideFlags: 0

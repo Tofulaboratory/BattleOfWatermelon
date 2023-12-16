@@ -13,6 +13,8 @@ public class IngameView : ViewBase, IIngameView
 
     [SerializeField] private TMP_Text[] scoreText;
 
+    [SerializeField] private GameObject score2Obj;
+
     private RectTransform rectTransform;
 
     private void Awake()
@@ -33,6 +35,11 @@ public class IngameView : ViewBase, IIngameView
     public void ApplyTurnIndicator(string name)
     {
         turnIndicaterText.text = $"{name}のターン";
+    }
+
+    public void SetActiveScore2(bool isActivate)
+    {
+        score2Obj.SetActive(isActivate);
     }
 
     public void SetActive(bool isActivate)

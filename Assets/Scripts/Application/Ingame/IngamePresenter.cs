@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using TMPro;
 using UniRx;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -76,6 +77,8 @@ public class IngamePresenter : IDisposable
                 _ingameView.ApplyTurnIndicator(playerEntity.Name);
             }).AddTo(_disposable);
         }
+
+        _ingameView.SetActiveScore2(gameBoardEntity.PlayerEntities.Length==2);
 
         gameBoardEntity.InNextFruitEntity.Where(item => item != null).Subscribe(item =>
         {
