@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UniRx;
@@ -5,8 +6,13 @@ using UnityEngine;
 
 public class PlayerEntity
 {
+    public string ID { get; private set; }
+
     private readonly ReactiveProperty<FruitEntity> _heldFruit = new();
     public IReadOnlyReactiveProperty<FruitEntity> HeldFruit => _heldFruit;
+
+    private readonly ReactiveProperty<bool> _isMyTurn = new();
+    public IReadOnlyReactiveProperty<bool> IsMyTurn => _isMyTurn;
 
     private readonly ReactiveProperty<int> _score = new();
     public IReadOnlyReactiveProperty<int> Score => _score;
@@ -14,11 +20,18 @@ public class PlayerEntity
 
     public PlayerEntity()
     {
+        ID = Guid.NewGuid().ToString();
+
         _score.Value = 0;
     }
 
     public void HoldFruit(FruitEntity fruitEntity)
     {
         _heldFruit.Value = fruitEntity;
+    }
+
+    public void ReleaseFruit()
+    {
+        _heldFruit.Value = null;
     }
 }

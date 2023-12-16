@@ -17,6 +17,10 @@ public class GameBoardEntity
     public IReadOnlyReactiveProperty<FruitEntity> InNextFruitEntity => _inNextFruitEntity;
 
     public PlayerEntity[] PlayerEntities { get; private set; }
+    private int _turn = 0;
+    private void ProgressTurn() => _turn++;
+    private int GetTurnIndex() => _turn % PlayerEntities.Length;
+    public string GetCurrentTurnPlayerID() => PlayerEntities[GetTurnIndex()].ID;
 
     public GameBoardEntity(PlayerEntity[] playerEntities)
     {
@@ -25,22 +29,24 @@ public class GameBoardEntity
 
     public void Initialize(FruitEntity inHoldFruit, FruitEntity inNextFruit)
     {
-        this.PlayerEntities[0].HoldFruit(inHoldFruit);
+        this.PlayerEntities[GetTurnIndex()].HoldFruit(inHoldFruit);
         _inNextFruitEntity.Value = inNextFruit;
     }
 
     public void MoveTurn(FruitEntity entity)
     {
-        _inBoardFruitEntities.Add(this.PlayerEntities[0].HeldFruit.Value);
-        this.PlayerEntities[0].HoldFruit(_inNextFruitEntity.Value);
+        _inBoardFruitEntities.Add(this.PlayerEntities[GetTurnIndex()].HeldFruit.Value);
+        ProgressTurn();
+
+        this.PlayerEntities[GetTurnIndex()].HoldFruit(_inNextFruitEntity.Value);
         _inNextFruitEntity.Value = entity;
     }
 
     public bool IsExistUnsafeFruit()
     {
-        foreach(var i in _inBoardFruitEntities)
+        foreach (var i in _inBoardFruitEntities)
         {
-            if(!i.IsSafe()) return true;
+            if (!i.IsSafe()) return true;
         }
 
         return false;
@@ -92,10 +98,10 @@ public class GameBoardEntity
                 if (_hervestFruitEntities[i].Level.Value == _hervestFruitEntities[j].Level.Value)
                 {
                     var level = _hervestFruitEntities[i].Level.Value;
-                    var position = Vector3.Lerp(_hervestFruitEntities[i].Position,_hervestFruitEntities[j].Position,0.5f);
+                    var position = Vector3.Lerp(_hervestFruitEntities[i].Position, _hervestFruitEntities[j].Position, 0.5f);
                     _hervestFruitEntities.RemoveAt(j);
                     _hervestFruitEntities.RemoveAt(i);
-                    this.PlayerEntities[0].AddScore((int)Math.Pow(2,level));
+                    this.PlayerEntities[GetTurnIndex()].AddScore((int)Math.Pow(2, level));
                     return (level, position);
                 }
             }
