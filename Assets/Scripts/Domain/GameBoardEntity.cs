@@ -35,9 +35,14 @@ public class GameBoardEntity
         _inNextFruitEntity.Value = inNextFruit;
     }
 
-    public void MoveTurn(FruitEntity entity)
+    public void ReleaseFruit()
     {
         _inBoardFruitEntities.Add(this.PlayerEntities[GetTurnIndex()].HeldFruit.Value);
+        this.PlayerEntities[GetTurnIndex()].ReleaseFruit();
+    }
+
+    public void MoveTurn(FruitEntity entity)
+    {
         ProgressTurn();
 
         var playerEntity = this.PlayerEntities[GetTurnIndex()];

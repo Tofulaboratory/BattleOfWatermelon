@@ -61,7 +61,7 @@ public class IngamePresenter : IDisposable
             _spawnObjectController.RegisterObj(playerUnit.GetObj());
 
             int index = i;
-            playerEntity.Score.Subscribe(score => _ingameView.ApplyScoreText(index,score)).AddTo(_disposable);
+            playerEntity.Score.Subscribe(score => _ingameView.ApplyScoreText(index, score)).AddTo(_disposable);
 
             playerEntity.HeldFruit.Where(item => item != null).Subscribe(item =>
             {
@@ -70,7 +70,7 @@ public class IngamePresenter : IDisposable
                 player.HoldFruit(fruitUnit);
             }).AddTo(_disposable);
 
-            playerEntity.IsMyTurn.Where(item => item == true).Subscribe(_=>
+            playerEntity.IsMyTurn.Where(item => item == true).Subscribe(_ =>
             {
                 _ingameView.ApplyTurnIndicator(playerEntity.Name);
             }).AddTo(_disposable);
@@ -102,6 +102,7 @@ public class IngamePresenter : IDisposable
                     await ExecuteJudgeAsync(gameEntity, _commonCts);
                     break;
                 case IngameState.CHANGE_PLAYER:
+                    await ExecuteChangePlayerAsync(gameEntity, _commonCts);
                     break;
                 case IngameState.RESULT:
                     await ExecuteResultAsync(gameEntity, _commonCts);
@@ -145,7 +146,7 @@ public class IngamePresenter : IDisposable
             ).Subscribe(value =>
             {
                 _playerUnitDic[gameBoardEntity.GetCurrentTurnPlayerID()].ReleaseFruit();
-                gameEntity?.ChangeGameState(IngameState.WAIT_FRUITS);
+                gameEntity.ReleaseFruit();
             }).AddTo(_disposable);
     }
 
@@ -175,6 +176,13 @@ public class IngamePresenter : IDisposable
     private async UniTask ExecuteJudgeAsync(GameEntity entity, CancellationTokenSource cts)
     {
         //await UniTask.Delay(500);
+        entity.Judge();
+    }
+
+    private async UniTask ExecuteChangePlayerAsync(GameEntity entity, CancellationTokenSource cts)
+    {
+        await UniTask.Delay(500);
+        //Debug.Log("Change player");
         entity?.TryMoveTurn(_fruitFactory.Create());
     }
 
@@ -209,7 +217,7 @@ public class IngamePresenter : IDisposable
         }).AddTo(_disposable);
         fruit.OnCollide().Subscribe(value =>
         {
-            gameEntity?.TryJudge();
+            gameEntity?.TryChangeJudge();
         }).AddTo(_disposable);
 
         if (parent == null)
