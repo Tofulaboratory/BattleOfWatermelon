@@ -38,7 +38,13 @@ public class GameEntity
         _ingameState.Value = state;
     }
 
-    public void TryJudge()
+    public void ReleaseFruit()
+    {
+        GameBoardEntity.ReleaseFruit();
+        ChangeGameState(IngameState.WAIT_FRUITS);
+    }
+
+    public void TryChangeJudge()
     {
         if (_ingameState.Value == IngameState.WAIT_FRUITS)
         {
@@ -46,7 +52,7 @@ public class GameEntity
         }
     }
 
-    public void TryMoveTurn(FruitEntity fruitEntity)
+    public void Judge()
     {
         if (GameBoardEntity.IsExistUnsafeFruit())
         {
@@ -54,6 +60,11 @@ public class GameEntity
             return;
         }
 
+        ChangeGameState(IngameState.CHANGE_PLAYER);
+    }
+
+    public void TryMoveTurn(FruitEntity fruitEntity)
+    {
         GameBoardEntity.MoveTurn(fruitEntity);
         ChangeGameState(IngameState.PROGRESS);
     }

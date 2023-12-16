@@ -20,7 +20,7 @@ public class IngamePresenter : IDisposable
     private readonly SpawnObjectControllerSpawner _spawnObjectControllerSpawner;
     private readonly GameRegistry _gameRegistry;
 
-    private readonly List<IPlayerUnit> _playerUnitList = new();
+    private readonly Dictionary<string, IPlayerUnit> _playerUnitDic = new();
     private SpawnObjectController _spawnObjectController;
 
     public IngamePresenter(
@@ -50,32 +50,41 @@ public class IngamePresenter : IDisposable
     private void Bind(Action onTransitionTitle)
     {
         var gameEntity = _gameRegistry.CurrentGameEntity?.Value;
+        var gameBoardEntity = gameEntity.GameBoardEntity;
 
-        //TODO 複数人対応
-        var playerEntity = gameEntity?.GameBoardEntity.PlayerEntities[0];
-        if (playerEntity != null)
+        for (int i = 0; i < gameBoardEntity.PlayerEntities.Length; i++)
         {
+            var playerEntity = gameBoardEntity.PlayerEntities[i];
             var playerUnit = _playerSpawner.Spawn(playerEntity);
-            _playerUnitList.Add(playerUnit);
+
+            _playerUnitDic.Add(playerEntity.ID, playerUnit);
             _spawnObjectController.RegisterObj(playerUnit.GetObj());
 
-            playerEntity.Score.Subscribe(score=>_ingameView.ApplyScoreText(score)).AddTo(_disposable);
+            int index = i;
+            playerUnit.ChangeColor(index);
+            playerEntity.Score.Subscribe(score => _ingameView.ApplyScoreText(index, score)).AddTo(_disposable);
+
+            playerEntity.HeldFruit.Where(item => item != null).Subscribe(item =>
+            {
+                var player = _playerUnitDic[playerEntity.ID];
+                var fruitUnit = SpawnFruit(item, gameEntity, player.GetPosition(), player.GetTransform());
+                player.HoldFruit(fruitUnit);
+            }).AddTo(_disposable);
+
+            playerEntity.IsMyTurn.Where(item => item == true).Subscribe(_ =>
+            {
+                _ingameView.ApplyTurnIndicator(playerEntity.Name);
+            }).AddTo(_disposable);
         }
 
-        gameEntity?.GameBoardEntity.InNextFruitEntity.Where(item => item != null).Subscribe(item =>
+        _ingameView.SetActiveScore2(gameBoardEntity.PlayerEntities.Length==2);
+
+        gameBoardEntity.InNextFruitEntity.Where(item => item != null).Subscribe(item =>
         {
             _ingameView.ApplyNextFrame(item);
         }).AddTo(_disposable);
 
-        gameEntity?.GameBoardEntity.PlayerEntities[0].HeldFruit.Where(item => item != null).Subscribe(item =>
-        {
-            //TODO 複数人対応
-            var player = _playerUnitList[0];
-            var fruitUnit = SpawnFruit(item, gameEntity, player.GetPosition(), player.GetTransform());
-            player.HoldFruit(fruitUnit);
-        }).AddTo(_disposable);
-
-        gameEntity?.CurrentGameState.Subscribe(async state =>
+        gameEntity.CurrentGameState.Subscribe(async state =>
         {
             switch (state)
             {
@@ -96,6 +105,7 @@ public class IngamePresenter : IDisposable
                     await ExecuteJudgeAsync(gameEntity, _commonCts);
                     break;
                 case IngameState.CHANGE_PLAYER:
+                    await ExecuteChangePlayerAsync(gameEntity, _commonCts);
                     break;
                 case IngameState.RESULT:
                     await ExecuteResultAsync(gameEntity, _commonCts);
@@ -109,7 +119,7 @@ public class IngamePresenter : IDisposable
             }
         }).AddTo(_disposable);
 
-        gameEntity?.GameBoardEntity.HervestFruitEntities.ObserveAdd().Subscribe(value =>
+        gameBoardEntity.HervestFruitEntities.ObserveAdd().Subscribe(value =>
         {
             var data = gameEntity.TryMergeFruits();
             if (data.Item1 < 0) return;
@@ -131,15 +141,15 @@ public class IngamePresenter : IDisposable
             gameEntity?.CurrentGameState.Value == IngameState.JUDGE
             ).Subscribe(value =>
             {
-                _playerUnitList[0].MovePosition(value);
+                _playerUnitDic[gameBoardEntity.GetCurrentTurnPlayerID()].MovePosition(value);
             }).AddTo(_disposable);
 
         InputEventProvider.Instance.GetKeyDownSpaceObservable.Where(_ =>
             gameEntity?.CurrentGameState.Value == IngameState.PROGRESS
             ).Subscribe(value =>
             {
-                _playerUnitList[0].ReleaseFruit();
-                gameEntity?.ChangeGameState(IngameState.WAIT_FRUITS);
+                _playerUnitDic[gameBoardEntity.GetCurrentTurnPlayerID()].ReleaseFruit();
+                gameEntity.ReleaseFruit();
             }).AddTo(_disposable);
     }
 
@@ -169,6 +179,13 @@ public class IngamePresenter : IDisposable
     private async UniTask ExecuteJudgeAsync(GameEntity entity, CancellationTokenSource cts)
     {
         //await UniTask.Delay(500);
+        entity.Judge();
+    }
+
+    private async UniTask ExecuteChangePlayerAsync(GameEntity entity, CancellationTokenSource cts)
+    {
+        await UniTask.Delay(500);
+        //Debug.Log("Change player");
         entity?.TryMoveTurn(_fruitFactory.Create());
     }
 
@@ -203,7 +220,7 @@ public class IngamePresenter : IDisposable
         }).AddTo(_disposable);
         fruit.OnCollide().Subscribe(value =>
         {
-            gameEntity?.TryJudge();
+            gameEntity?.TryChangeJudge();
         }).AddTo(_disposable);
 
         if (parent == null)

@@ -9,12 +9,14 @@ using UnityEngine.UI;
 
 public class MatchingView : ViewBase, IMatchingView
 {
-    //全員たかしなので、プレイヤー2のみ変更
+    //全員ただしなので、プレイヤー2のみ変更
     [SerializeField] private Image player2Image;
     [SerializeField] private TMP_Text player2Name;
 
     [SerializeField] private Sprite playerSprite;
-    private readonly string playerName = "たかし";
+    private readonly string playerName = "ただし";
+    [SerializeField] private Sprite unknownSprite;
+    private readonly string unknownName = "?";
     private readonly int directMatchEndDuration = 500;
 
     /// <summary>
@@ -39,6 +41,16 @@ public class MatchingView : ViewBase, IMatchingView
     {
         player2Image.sprite = playerSprite;
         player2Name.text = playerName;
+
+        player2Image.SetNativeSize();
+    }
+
+    private void ApplyUnknownInfo()
+    {
+        player2Image.sprite = unknownSprite;
+        player2Name.text = unknownName;
+
+        player2Image.SetNativeSize();
     }
 
     /// <summary>
@@ -46,6 +58,7 @@ public class MatchingView : ViewBase, IMatchingView
     /// </summary>
     public async UniTask DirectMatchBeginAsync()
     {
+        ApplyUnknownInfo();
         await DirectSlideInFrameAsync();
     }
 

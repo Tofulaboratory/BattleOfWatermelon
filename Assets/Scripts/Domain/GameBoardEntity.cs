@@ -17,6 +17,11 @@ public class GameBoardEntity
     public IReadOnlyReactiveProperty<FruitEntity> InNextFruitEntity => _inNextFruitEntity;
 
     public PlayerEntity[] PlayerEntities { get; private set; }
+    private readonly ReactiveProperty<int> _turn = new();
+    public IReadOnlyReactiveProperty<int> Turn => _turn;
+    private void ProgressTurn() => _turn.Value++;
+    private int GetTurnIndex() => _turn.Value % PlayerEntities.Length;
+    public string GetCurrentTurnPlayerID() => PlayerEntities[GetTurnIndex()].ID;
 
     public GameBoardEntity(PlayerEntity[] playerEntities)
     {
@@ -25,22 +30,36 @@ public class GameBoardEntity
 
     public void Initialize(FruitEntity inHoldFruit, FruitEntity inNextFruit)
     {
-        this.PlayerEntities[0].HoldFruit(inHoldFruit);
+        this.PlayerEntities[GetTurnIndex()].HoldFruit(inHoldFruit);
+        this.PlayerEntities[GetTurnIndex()].SetTurn(true);
         _inNextFruitEntity.Value = inNextFruit;
+    }
+
+    public void ReleaseFruit()
+    {
+        _inBoardFruitEntities.Add(this.PlayerEntities[GetTurnIndex()].HeldFruit.Value);
+        this.PlayerEntities[GetTurnIndex()].ReleaseFruit();
     }
 
     public void MoveTurn(FruitEntity entity)
     {
-        _inBoardFruitEntities.Add(this.PlayerEntities[0].HeldFruit.Value);
-        this.PlayerEntities[0].HoldFruit(_inNextFruitEntity.Value);
+        ProgressTurn();
+
+        var playerEntity = this.PlayerEntities[GetTurnIndex()];
+        playerEntity.HoldFruit(_inNextFruitEntity.Value);
+        for(int i = 0;i<this.PlayerEntities.Length;i++)
+        {
+            playerEntity.SetTurn(false);    
+        }
+        playerEntity.SetTurn(true);
         _inNextFruitEntity.Value = entity;
     }
 
     public bool IsExistUnsafeFruit()
     {
-        foreach(var i in _inBoardFruitEntities)
+        foreach (var i in _inBoardFruitEntities)
         {
-            if(!i.IsSafe()) return true;
+            if (!i.IsSafe()) return true;
         }
 
         return false;
@@ -92,10 +111,10 @@ public class GameBoardEntity
                 if (_hervestFruitEntities[i].Level.Value == _hervestFruitEntities[j].Level.Value)
                 {
                     var level = _hervestFruitEntities[i].Level.Value;
-                    var position = Vector3.Lerp(_hervestFruitEntities[i].Position,_hervestFruitEntities[j].Position,0.5f);
+                    var position = Vector3.Lerp(_hervestFruitEntities[i].Position, _hervestFruitEntities[j].Position, 0.5f);
                     _hervestFruitEntities.RemoveAt(j);
                     _hervestFruitEntities.RemoveAt(i);
-                    this.PlayerEntities[0].AddScore((int)Math.Pow(2,level));
+                    this.PlayerEntities[GetTurnIndex()].AddScore((int)Math.Pow(2, level));
                     return (level, position);
                 }
             }
