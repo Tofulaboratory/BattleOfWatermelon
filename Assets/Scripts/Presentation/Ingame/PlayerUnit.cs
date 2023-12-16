@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class PlayerUnit : MonoBehaviour, IPlayerUnit
 {
+    [SerializeField] private SpriteRenderer spriteRenderer;
+
     private readonly ReactiveProperty<IFruitUnit> _heldFruit = new();
 
     public void Initialize(PlayerEntity entity)
@@ -53,5 +55,18 @@ public class PlayerUnit : MonoBehaviour, IPlayerUnit
     public GameObject GetObj()
     {
         return gameObject;
+    }
+
+    public void ChangeColor(int index)
+    {
+        //TODO 雑なので直す
+        if (index == 0)
+        {
+            spriteRenderer.color = new Color(1, 0.5f, 0.5f);
+        }
+        else if (index == 1)
+        {
+            spriteRenderer.color = new Color(0.5f, 0.5f, 1);
+        }
     }
 }

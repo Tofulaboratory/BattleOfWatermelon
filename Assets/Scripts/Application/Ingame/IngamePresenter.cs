@@ -61,6 +61,7 @@ public class IngamePresenter : IDisposable
             _spawnObjectController.RegisterObj(playerUnit.GetObj());
 
             int index = i;
+            playerUnit.ChangeColor(index);
             playerEntity.Score.Subscribe(score => _ingameView.ApplyScoreText(index, score)).AddTo(_disposable);
 
             playerEntity.HeldFruit.Where(item => item != null).Subscribe(item =>

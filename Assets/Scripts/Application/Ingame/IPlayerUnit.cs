@@ -11,4 +11,5 @@ public interface IPlayerUnit
     public Transform GetTransform();
     public void ReleaseFruit();
     public GameObject GetObj();
+    public void ChangeColor(int index);
 }
