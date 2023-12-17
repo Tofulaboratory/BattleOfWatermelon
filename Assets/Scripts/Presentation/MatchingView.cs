@@ -17,7 +17,7 @@ public class MatchingView : ViewBase, IMatchingView
     private readonly string playerName = "ただし";
     [SerializeField] private Sprite unknownSprite;
     private readonly string unknownName = "?";
-    private readonly int directMatchEndDuration = 500;
+    private readonly int directMatchEndDuration = 1000;
 
     /// <summary>
     /// フレームがinする演出
