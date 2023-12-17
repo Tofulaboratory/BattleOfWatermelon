@@ -195,7 +195,7 @@ public class IngamePresenter : IDisposable
         await _ingameView.ShowBeltAsync($"スタート！");
 
         entity?.ChangeGameState(IngameState.PROGRESS);
-        if(entity.IsMulti()) _ingameView.ShowBeltAsync($"ただし1のターン").Forget();
+        if(entity.IsMulti()) _ingameView.ShowBeltAsync($"ただしのターン").Forget();
     }
 
     private void ExecuteWaitFruits(GameEntity entity, CancellationTokenSource cts)

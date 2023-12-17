@@ -90,6 +90,9 @@ public class GameUsecase : IDisposable
             () => ChangeOutgameState(OutgameState.MATCHING)
         );
         titlePresenter.Initialize();
+
+        AudioManager.Instance.Initialize();
+        AudioManager.Instance.PlayBGM("bgm1");
     }
 
     private void InitializeMatching()
@@ -122,10 +125,10 @@ public class GameUsecase : IDisposable
 
     public void Dispose()
     {
-        titlePresenter.Dispose();
-        matchingPresenter.Dispose();
-        ingamePresenter.Dispose();
-        _disposable.Dispose();
+        titlePresenter?.Dispose();
+        matchingPresenter?.Dispose();
+        ingamePresenter?.Dispose();
+        _disposable?.Dispose();
 
         GC.SuppressFinalize(this);
     }
