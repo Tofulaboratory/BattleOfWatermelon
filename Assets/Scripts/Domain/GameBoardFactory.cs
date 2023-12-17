@@ -14,10 +14,22 @@ public class GameBoardFactory
         _playerFactory = playerFactory;
     }
 
-    internal GameBoardEntity CreateEntity(PlayerEntity playerEntity) => new(playerEntity);
+    internal GameBoardEntity CreateEntity(PlayerEntity[] playerEntities) => new(playerEntities);
 
     public GameBoardEntity Create(IngameType type)
     {
-        return CreateEntity(_playerFactory.Create());
+        GameBoardEntity ret = null;
+        switch (type)
+        {
+            case IngameType.SINGLE:
+            ret = CreateEntity(_playerFactory.CreateSingle());
+                break;
+            case IngameType.MULTI:
+            ret = CreateEntity(_playerFactory.CreateMulti());
+                break;
+            default:
+                break;
+        }
+        return ret;
     }
 }

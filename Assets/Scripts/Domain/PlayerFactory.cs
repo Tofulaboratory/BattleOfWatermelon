@@ -1,18 +1,29 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerFactory
 {
     public PlayerFactory()
     {
-        
+
     }
 
-    internal PlayerEntity CreateEntity() => new();
+    internal PlayerEntity CreateEntity(string name) => new(name);
 
-    public PlayerEntity Create()
+    public PlayerEntity[] CreateSingle()
     {
-        return CreateEntity();
+        var ret = new PlayerEntity[1];
+        ret[0] = CreateEntity("ただし");
+        return ret;
+    }
+
+    public PlayerEntity[] CreateMulti()
+    {
+        var ret = new PlayerEntity[2];
+        ret[0] = CreateEntity("ただし");
+        ret[1] = CreateEntity("ただし(bot)");
+        return ret;
     }
 }

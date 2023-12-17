@@ -10,6 +10,8 @@ public class GameEntity
     public IngameType IngameType { get; private set; }
     public GameBoardEntity GameBoardEntity { get; private set; }
 
+    public bool IsMulti() => IngameType == IngameType.MULTI;
+
     private readonly ReactiveProperty<IngameState> _ingameState = new();
     public IReadOnlyReactiveProperty<IngameState> CurrentGameState => _ingameState;
 
@@ -38,7 +40,13 @@ public class GameEntity
         _ingameState.Value = state;
     }
 
-    public void TryJudge()
+    public void ReleaseFruit()
+    {
+        GameBoardEntity.ReleaseFruit();
+        ChangeGameState(IngameState.WAIT_FRUITS);
+    }
+
+    public void TryChangeJudge()
     {
         if (_ingameState.Value == IngameState.WAIT_FRUITS)
         {
@@ -46,7 +54,7 @@ public class GameEntity
         }
     }
 
-    public void TryMoveTurn(FruitEntity fruitEntity)
+    public void Judge()
     {
         if (GameBoardEntity.IsExistUnsafeFruit())
         {
@@ -54,6 +62,11 @@ public class GameEntity
             return;
         }
 
+        ChangeGameState(IngameState.CHANGE_PLAYER);
+    }
+
+    public void TryMoveTurn(FruitEntity fruitEntity)
+    {
         GameBoardEntity.MoveTurn(fruitEntity);
         ChangeGameState(IngameState.PROGRESS);
     }
@@ -71,6 +84,32 @@ public class GameEntity
     public void EndGame()
     {
         //TODO
+    }
+
+    public string GetResultText()
+    {
+        switch (IngameType)
+        {
+            case IngameType.SINGLE:
+                return $"スコア\n{GameBoardEntity.PlayerEntities[0].Score.Value}";
+            case IngameType.MULTI:
+            var winner = "";
+            if(GameBoardEntity.PlayerEntities[0].Score.Value>GameBoardEntity.PlayerEntities[1].Score.Value)
+            {
+                winner = GameBoardEntity.PlayerEntities[0].Name;
+            }
+            else if(GameBoardEntity.PlayerEntities[0].Score.Value<GameBoardEntity.PlayerEntities[1].Score.Value)
+            {
+                winner = GameBoardEntity.PlayerEntities[1].Name;
+            }
+            else
+            {
+                return "引き分け！";
+            }
+            return $"{winner}の勝利！";
+        }
+
+        return "";
     }
 
     // public void SolveGameState()

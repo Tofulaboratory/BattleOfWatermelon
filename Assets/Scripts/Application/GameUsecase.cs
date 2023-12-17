@@ -13,6 +13,7 @@ public class GameUsecase : IDisposable
     public void ChangeOutgameState(OutgameState state) => _outgameState.Value = state;
 
     private readonly ITitleView _titleView;
+    private readonly IMatchingView _matchingView;
     private readonly IIngameView _ingameView;
     private readonly IResultView _resultView;
 
@@ -25,11 +26,13 @@ public class GameUsecase : IDisposable
     private readonly SpawnObjectControllerSpawner _spawnObjectControllerSpawner;
 
     private TitlePresenter titlePresenter;
+    private MatchingPresenter matchingPresenter;
     private IngamePresenter ingamePresenter;
 
     [Inject]
     public GameUsecase(
         ITitleView titleView,
+        IMatchingView matchingView,
         IIngameView ingameView,
         IResultView resultView,
         GameRegistry gameRegistry,
@@ -38,6 +41,7 @@ public class GameUsecase : IDisposable
         )
     {
         _titleView = titleView;
+        _matchingView = matchingView;
         _ingameView = ingameView;
         _resultView = resultView;
         _gameRegistry = gameRegistry;
@@ -58,8 +62,7 @@ public class GameUsecase : IDisposable
                     break;
 
                 case OutgameState.MATCHING:
-                    //TODO 複数人プレイ対応
-                    ChangeOutgameState(OutgameState.INGAME);
+                    InitializeMatching();
                     break;
 
                 case OutgameState.INGAME:
@@ -89,6 +92,18 @@ public class GameUsecase : IDisposable
         titlePresenter.Initialize();
     }
 
+    private void InitializeMatching()
+    {
+        matchingPresenter?.Dispose();
+        matchingPresenter = new MatchingPresenter(
+            _matchingView,
+            _gameRegistry,
+            () => ChangeOutgameState(OutgameState.INGAME)
+        );
+        matchingPresenter.Initialize();
+        matchingPresenter.Match();
+    }
+
     private void InitializeIngame()
     {
         ingamePresenter?.Dispose();
@@ -108,6 +123,7 @@ public class GameUsecase : IDisposable
     public void Dispose()
     {
         titlePresenter.Dispose();
+        matchingPresenter.Dispose();
         ingamePresenter.Dispose();
         _disposable.Dispose();
 
