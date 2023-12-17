@@ -73,7 +73,12 @@ public class IngamePresenter : IDisposable
 
             playerEntity.IsMyTurn.Where(item => item == true).Subscribe(_ =>
             {
-                if(gameEntity.IsMulti()) _ingameView.ShowBeltAsync($"{playerEntity.Name}のターン").Forget();
+                if(gameEntity.IsMulti())
+                {
+                    AudioManager.Instance.PlaySE("hun");
+                    _ingameView.ShowBeltAsync($"{playerEntity.Name}のターン").Forget();
+                }
+
                 _ingameView.ApplyTurnIndicator(playerEntity.Name);
 
                 //TODO 修正する
@@ -81,7 +86,7 @@ public class IngamePresenter : IDisposable
             }).AddTo(_disposable);
         }
 
-        _ingameView.SetActiveScore2(gameBoardEntity.PlayerEntities.Length==2);
+        _ingameView.SetActiveScore2(gameEntity.IsMulti());
 
         gameBoardEntity.InNextFruitEntity.Where(item => item != null).Subscribe(item =>
         {
@@ -132,6 +137,7 @@ public class IngamePresenter : IDisposable
             gameEntity?.GameBoardEntity.InsertFruit(fruitEntity);
 
             SpawnFruit(fruitEntity, gameEntity, data.Item2);
+            AudioManager.Instance.PlaySE("pat");
         }).AddTo(_disposable);
 
         _resultView.OnClickTitleButton().Subscribe(_ =>
@@ -165,6 +171,7 @@ public class IngamePresenter : IDisposable
     {
         _playerUnitDic[id].ReleaseFruit();
         gameEntity.ReleaseFruit();
+        AudioManager.Instance.PlaySE("pat");
     }
 
     private async UniTask ExecuteBOTRoutineAsync(GameEntity gameEntity, GameBoardEntity gameBoardEntity)
@@ -192,10 +199,14 @@ public class IngamePresenter : IDisposable
 
     private async UniTask ExecuteBeginAsync(GameEntity entity, CancellationTokenSource cts)
     {
+        AudioManager.Instance.PlaySE("horn");
         await _ingameView.ShowBeltAsync($"スタート！");
 
         entity?.ChangeGameState(IngameState.PROGRESS);
-        if(entity.IsMulti()) _ingameView.ShowBeltAsync($"ただし1のターン").Forget();
+        if(entity.IsMulti()){
+            AudioManager.Instance.PlaySE("hun");
+            _ingameView.ShowBeltAsync($"ただしのターン").Forget();
+        }
     }
 
     private void ExecuteWaitFruits(GameEntity entity, CancellationTokenSource cts)
@@ -216,6 +227,7 @@ public class IngamePresenter : IDisposable
 
     private async UniTask ExecuteResultAsync(GameEntity entity, CancellationTokenSource cts)
     {
+        AudioManager.Instance.PlaySE("exp01");
         _resultView.ApplyResultText(entity.GetResultText());
         _resultView.SetActive(true);
     }

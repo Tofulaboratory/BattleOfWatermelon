@@ -21,6 +21,8 @@ public class TitlePresenter : IDisposable
 
             onTransitionGame.Invoke();
             _titleView.SetActive(false);
+
+            AudioManager.Instance.PlaySE("button01");
         }).AddTo(_disposable);
 
          _titleView.OnClickMultiStartButton().Subscribe(_=>{
@@ -29,6 +31,8 @@ public class TitlePresenter : IDisposable
 
             onTransitionGame.Invoke();
             _titleView.SetActive(false);
+
+            AudioManager.Instance.PlaySE("button01");
         }).AddTo(_disposable);
     }
 
