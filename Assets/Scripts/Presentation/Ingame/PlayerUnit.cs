@@ -36,14 +36,16 @@ public class PlayerUnit : MonoBehaviour, IPlayerUnit
     public void MovePosition(float direction)
     {
         transform.position += Vector3.right * direction * ValueDefines.Player_MOVE_SPEED;
-        if (transform.position.x >= ValueDefines.SAFE_ZONE_MAX_X)
+        var maxLimitX = ValueDefines.SAFE_ZONE_MAX_X - ValueDefines.MOVE_LIMIT_X;
+        if (transform.position.x >= maxLimitX)
         {
-            transform.position = new Vector3(ValueDefines.SAFE_ZONE_MAX_X, transform.position.y, transform.position.z);
+            transform.position = new Vector3(maxLimitX, transform.position.y, transform.position.z);
         }
 
-        if (transform.position.x <= ValueDefines.SAFE_ZONE_MIN_X)
+        var minLimitX = ValueDefines.SAFE_ZONE_MIN_X + ValueDefines.MOVE_LIMIT_X;
+        if (transform.position.x <= minLimitX)
         {
-            transform.position = new Vector3(ValueDefines.SAFE_ZONE_MIN_X, transform.position.y, transform.position.z);
+            transform.position = new Vector3(minLimitX, transform.position.y, transform.position.z);
         }
     }
 
