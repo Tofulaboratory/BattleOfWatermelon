@@ -73,6 +73,7 @@ public class IngamePresenter : IDisposable
 
             playerEntity.IsMyTurn.Where(item => item == true).Subscribe(_ =>
             {
+                if(gameEntity.IsMulti()) _ingameView.ShowBeltAsync($"{playerEntity.Name}のターン").Forget();
                 _ingameView.ApplyTurnIndicator(playerEntity.Name);
             }).AddTo(_disposable);
         }
@@ -165,10 +166,10 @@ public class IngamePresenter : IDisposable
 
     private async UniTask ExecuteBeginAsync(GameEntity entity, CancellationTokenSource cts)
     {
-        //TODO 表示待ち
-        await UniTask.Delay(500);
+        await _ingameView.ShowBeltAsync($"スタート！");
 
         entity?.ChangeGameState(IngameState.PROGRESS);
+        if(entity.IsMulti()) _ingameView.ShowBeltAsync($"ただし1のターン").Forget();
     }
 
     private void ExecuteWaitFruits(GameEntity entity, CancellationTokenSource cts)
@@ -178,14 +179,12 @@ public class IngamePresenter : IDisposable
 
     private async UniTask ExecuteJudgeAsync(GameEntity entity, CancellationTokenSource cts)
     {
-        //await UniTask.Delay(500);
+        await UniTask.Delay(500);
         entity.Judge();
     }
 
     private async UniTask ExecuteChangePlayerAsync(GameEntity entity, CancellationTokenSource cts)
     {
-        await UniTask.Delay(500);
-        //Debug.Log("Change player");
         entity?.TryMoveTurn(_fruitFactory.Create());
     }
 
