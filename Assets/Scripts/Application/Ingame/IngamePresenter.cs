@@ -216,6 +216,7 @@ public class IngamePresenter : IDisposable
 
     private async UniTask ExecuteResultAsync(GameEntity entity, CancellationTokenSource cts)
     {
+        _resultView.ApplyResultText(entity.GetResultText());
         _resultView.SetActive(true);
     }
 

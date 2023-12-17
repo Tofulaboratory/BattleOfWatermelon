@@ -86,6 +86,32 @@ public class GameEntity
         //TODO
     }
 
+    public string GetResultText()
+    {
+        switch (IngameType)
+        {
+            case IngameType.SINGLE:
+                return $"スコア\n{GameBoardEntity.PlayerEntities[0].Score.Value}";
+            case IngameType.MULTI:
+            var winner = "";
+            if(GameBoardEntity.PlayerEntities[0].Score.Value>GameBoardEntity.PlayerEntities[1].Score.Value)
+            {
+                winner = GameBoardEntity.PlayerEntities[0].Name;
+            }
+            else if(GameBoardEntity.PlayerEntities[0].Score.Value<GameBoardEntity.PlayerEntities[1].Score.Value)
+            {
+                winner = GameBoardEntity.PlayerEntities[1].Name;
+            }
+            else
+            {
+                return "引き分け！";
+            }
+            return $"{winner}の勝利！";
+        }
+
+        return "";
+    }
+
     // public void SolveGameState()
     // {
     //     _ingameState.Value = this.IngameStateSolver.Solve();
