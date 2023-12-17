@@ -50,8 +50,6 @@ public class AudioManager : SingletonMonoBehaviour<AudioManager> {
     /// bgmをならす
     /// </summary>
     public void PlayBGM (string name, bool isLoop = true, float volume = 1) {
-        Debug.Log(name);
-        Debug.Log(_bgmSourceDic.ContainsKey(name));
         if (!_bgmSourceDic.ContainsKey (name)) return;
         if (_bgmSourceDic[name].isPlaying) return;
 
