@@ -22,8 +22,8 @@ public class PlayerFactory
     public PlayerEntity[] CreateMulti()
     {
         var ret = new PlayerEntity[2];
-        ret[0] = CreateEntity("ただし1");
-        ret[1] = CreateEntity("ただし2");
+        ret[0] = CreateEntity("ただし");
+        ret[1] = CreateEntity("ただし(bot)");
         return ret;
     }
 }

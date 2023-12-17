@@ -20,7 +20,7 @@ public class GameBoardEntity
     private readonly ReactiveProperty<int> _turn = new();
     public IReadOnlyReactiveProperty<int> Turn => _turn;
     private void ProgressTurn() => _turn.Value++;
-    private int GetTurnIndex() => _turn.Value % PlayerEntities.Length;
+    public int GetTurnIndex() => _turn.Value % PlayerEntities.Length;
     public string GetCurrentTurnPlayerID() => PlayerEntities[GetTurnIndex()].ID;
 
     public GameBoardEntity(PlayerEntity[] playerEntities)

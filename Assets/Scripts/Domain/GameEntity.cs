@@ -10,6 +10,8 @@ public class GameEntity
     public IngameType IngameType { get; private set; }
     public GameBoardEntity GameBoardEntity { get; private set; }
 
+    public bool IsMulti() => IngameType == IngameType.MULTI;
+
     private readonly ReactiveProperty<IngameState> _ingameState = new();
     public IReadOnlyReactiveProperty<IngameState> CurrentGameState => _ingameState;
 

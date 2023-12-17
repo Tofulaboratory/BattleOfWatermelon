@@ -73,7 +73,11 @@ public class IngamePresenter : IDisposable
 
             playerEntity.IsMyTurn.Where(item => item == true).Subscribe(_ =>
             {
+                if(gameEntity.IsMulti()) _ingameView.ShowBeltAsync($"{playerEntity.Name}のターン").Forget();
                 _ingameView.ApplyTurnIndicator(playerEntity.Name);
+
+                //TODO 修正する
+                if(gameBoardEntity.GetTurnIndex()==1) ExecuteBOTRoutineAsync(gameEntity, gameBoardEntity).Forget();
             }).AddTo(_disposable);
         }
 
@@ -139,18 +143,41 @@ public class IngamePresenter : IDisposable
             gameEntity?.CurrentGameState.Value == IngameState.PROGRESS ||
             gameEntity?.CurrentGameState.Value == IngameState.WAIT_FRUITS ||
             gameEntity?.CurrentGameState.Value == IngameState.JUDGE
-            ).Subscribe(value =>
+            ).Where(_=>gameBoardEntity.GetTurnIndex()==0).Subscribe(value => // TODO:オンライン通信用に修正
             {
-                _playerUnitDic[gameBoardEntity.GetCurrentTurnPlayerID()].MovePosition(value);
+                MovePlayerUnitPosition(gameBoardEntity.GetCurrentTurnPlayerID(),value);
             }).AddTo(_disposable);
 
         InputEventProvider.Instance.GetKeyDownSpaceObservable.Where(_ =>
             gameEntity?.CurrentGameState.Value == IngameState.PROGRESS
-            ).Subscribe(value =>
+            ).Where(_=>gameBoardEntity.GetTurnIndex()==0).Subscribe(value => // TODO:オンライン通信用に修正
             {
-                _playerUnitDic[gameBoardEntity.GetCurrentTurnPlayerID()].ReleaseFruit();
-                gameEntity.ReleaseFruit();
+                ReleasePlayerUnitFruit(gameBoardEntity.GetCurrentTurnPlayerID(),gameEntity);
             }).AddTo(_disposable);
+    }
+
+    private void MovePlayerUnitPosition(string id, float value)
+    {
+        _playerUnitDic[id].MovePosition(value);
+    }
+
+    private void ReleasePlayerUnitFruit(string id,GameEntity gameEntity)
+    {
+        _playerUnitDic[id].ReleaseFruit();
+        gameEntity.ReleaseFruit();
+    }
+
+    private async UniTask ExecuteBOTRoutineAsync(GameEntity gameEntity, GameBoardEntity gameBoardEntity)
+    {
+        var direction = UnityEngine.Random.value - 0.5f;
+        var duration = 60;
+        for(var i = 0 ; i<duration;i++)
+        {
+            MovePlayerUnitPosition(gameBoardEntity.GetCurrentTurnPlayerID(),direction);
+            await UniTask.DelayFrame(1);
+        }
+
+        ReleasePlayerUnitFruit(gameBoardEntity.GetCurrentTurnPlayerID(),gameEntity);
     }
 
     private async UniTask ExecuteReady(GameEntity entity, CancellationTokenSource cts)
@@ -165,10 +192,10 @@ public class IngamePresenter : IDisposable
 
     private async UniTask ExecuteBeginAsync(GameEntity entity, CancellationTokenSource cts)
     {
-        //TODO 表示待ち
-        await UniTask.Delay(500);
+        await _ingameView.ShowBeltAsync($"スタート！");
 
         entity?.ChangeGameState(IngameState.PROGRESS);
+        if(entity.IsMulti()) _ingameView.ShowBeltAsync($"ただし1のターン").Forget();
     }
 
     private void ExecuteWaitFruits(GameEntity entity, CancellationTokenSource cts)
@@ -178,14 +205,12 @@ public class IngamePresenter : IDisposable
 
     private async UniTask ExecuteJudgeAsync(GameEntity entity, CancellationTokenSource cts)
     {
-        //await UniTask.Delay(500);
+        await UniTask.Delay(500);
         entity.Judge();
     }
 
     private async UniTask ExecuteChangePlayerAsync(GameEntity entity, CancellationTokenSource cts)
     {
-        await UniTask.Delay(500);
-        //Debug.Log("Change player");
         entity?.TryMoveTurn(_fruitFactory.Create());
     }
 
