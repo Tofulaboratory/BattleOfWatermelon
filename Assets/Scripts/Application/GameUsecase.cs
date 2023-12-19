@@ -16,6 +16,7 @@ public class GameUsecase : IDisposable
     private readonly IMatchingView _matchingView;
     private readonly IIngameView _ingameView;
     private readonly IResultView _resultView;
+    private readonly ISettingView _settingView;
 
     private readonly GameRegistry _gameRegistry;
 
@@ -35,6 +36,7 @@ public class GameUsecase : IDisposable
         IMatchingView matchingView,
         IIngameView ingameView,
         IResultView resultView,
+        ISettingView settingView,
         GameRegistry gameRegistry,
         GameFactory gameFactory,
         FruitFactory fruitFactory
@@ -44,6 +46,7 @@ public class GameUsecase : IDisposable
         _matchingView = matchingView;
         _ingameView = ingameView;
         _resultView = resultView;
+        _settingView = settingView;
         _gameRegistry = gameRegistry;
         _gameFactory = gameFactory;
         _fruitFactory = fruitFactory;
@@ -85,6 +88,7 @@ public class GameUsecase : IDisposable
         titlePresenter?.Dispose();
         titlePresenter = new TitlePresenter(
             _titleView,
+            _settingView,
             _gameFactory,
             _gameRegistry,
             () => ChangeOutgameState(OutgameState.MATCHING)
