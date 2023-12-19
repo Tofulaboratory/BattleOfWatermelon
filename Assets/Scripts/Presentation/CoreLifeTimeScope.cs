@@ -11,6 +11,7 @@ public class CoreLifeTimeScope : LifetimeScope
     [SerializeField] private MatchingView _matchingView;
     [SerializeField] private IngameView _ingameView;
     [SerializeField] private ResultView _resultView;
+    [SerializeField] private SettingView _settingView;
 
     protected override void Configure(IContainerBuilder builder)
     {
@@ -30,5 +31,6 @@ public class CoreLifeTimeScope : LifetimeScope
         builder.RegisterInstance(_matchingView).As<IMatchingView>();
         builder.RegisterInstance(_ingameView).As<IIngameView>();
         builder.RegisterInstance(_resultView).As<IResultView>();
+        builder.RegisterInstance(_settingView).As<ISettingView>();
     }
 }
